@@ -9,13 +9,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
             color: #333;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
         }
         h1 {
             text-align: center;
-            color: #cc0000; /* Màu đỏ đăc trưng của Bách Khoa */
+            color: #cc0000;
         }
         .input-section {
             background: white;
@@ -25,12 +25,16 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
         }
-        input {
+        input, select {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             flex: 1;
+            min-width: 120px;
+            font-size: 14px;
         }
         button {
             padding: 10px 20px;
@@ -40,6 +44,8 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            min-width: 100px;
+            font-size: 14px;
         }
         button:hover {
             background-color: #a30000;
@@ -86,19 +92,32 @@
     <h1>Công cụ tính CPA - HUST</h1>
 
     <div class="input-section">
-        <input type="text" id="tenMon" placeholder="Tên môn học (VD: Giải tích 1)">
+        <input type="text" id="maHP" placeholder="Mã HP (VD: IT1110)" oninput="tuDongDienThongTin()">
+        <input type="text" id="tenMon" placeholder="Tên môn học">
         <input type="number" id="soTinChi" placeholder="Số tín chỉ" min="1">
-        <input type="number" id="diem10" placeholder="Điểm hệ 10" step="0.1" min="0" max="10">
+        
+        <select id="diemChu">
+            <option value="" disabled selected>Chọn điểm chữ</option>
+            <option value="A">A</option>
+            <option value="B+">B+</option>
+            <option value="B">B</option>
+            <option value="C+">C+</option>
+            <option value="C">C</option>
+            <option value="D+">D+</option>
+            <option value="D">D</option>
+            <option value="F">F</option>
+        </select>
+
         <button onclick="themMonHoc()">Thêm môn</button>
     </div>
 
     <table>
         <thead>
             <tr>
+                <th>Mã HP</th>
                 <th>Tên môn</th>
                 <th>Tín chỉ</th>
-                <th>Điểm hệ 10</th>
-                <th>Điểm hệ 4</th>
+                <th>Điểm chữ</th> <th>Điểm hệ 4</th>
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -112,42 +131,75 @@
     </div>
 
     <script>
+        // CƠ SỞ DỮ LIỆU MÔN HỌC
+        const coSoDuLieuHUST = {
+            "IT1110": { ten: "Tin học đại cương", tinChi: 4 },
+            "MI1111": { ten: "Giải tích 1", tinChi: 4 },
+            "MI1121": { ten: "Giải tích 2", tinChi: 4 },
+            "MI2020": { ten: "Xác suất thống kê", tinChi: 3 },
+            "PH1110": { ten: "Vật lý đại cương 1", tinChi: 3 },
+            "PH1120": { ten: "Vật lý đại cương 2", tinChi: 3 },
+            "IT3011": { ten: "Cấu trúc dữ liệu và thuật toán", tinChi: 3 },
+            "IT3040": { ten: "Kỹ thuật lập trình", tinChi: 2 },
+            "EM1170": { ten: "Pháp luật đại cương", tinChi: 2 }
+        };
+
         let danhSachMon = [];
 
-        // Quy đổi điểm HUST
-        function quyDoiHUST(diem10) {
-            if (diem10 >= 8.5) return 4.0;
-            if (diem10 >= 8.0) return 3.5;
-            if (diem10 >= 7.0) return 3.0;
-            if (diem10 >= 6.5) return 2.5;
-            if (diem10 >= 5.5) return 2.0;
-            if (diem10 >= 5.0) return 1.5;
-            if (diem10 >= 4.0) return 1.0;
-            return 0.0;
+        // Tự động điền thông tin khi gõ Mã HP
+        function tuDongDienThongTin() {
+            let maHPNhapVao = document.getElementById('maHP').value.toUpperCase().trim();
+            let thongTinMon = coSoDuLieuHUST[maHPNhapVao];
+
+            if (thongTinMon) {
+                document.getElementById('tenMon').value = thongTinMon.ten;
+                document.getElementById('soTinChi').value = thongTinMon.tinChi;
+            }
+        }
+
+        // THAY ĐỔI Ở ĐÂY: Hàm quy đổi thẳng từ Điểm Chữ sang hệ 4
+        function quyDoiHUST(diemChu) {
+            const bangDiem = {
+                "A": 4.0,
+                "B+": 3.5,
+                "B": 3.0,
+                "C+": 2.5,
+                "C": 2.0,
+                "D+": 1.5,
+                "D": 1.0,
+                "F": 0.0
+            };
+            // Nếu có trong bảng điểm thì trả về số điểm, nếu không trả về 0
+            return bangDiem[diemChu] !== undefined ? bangDiem[diemChu] : 0.0;
         }
 
         // Thêm môn học mới
         function themMonHoc() {
+            let maHP = document.getElementById('maHP').value.toUpperCase().trim();
             let ten = document.getElementById('tenMon').value;
             let tinChi = parseFloat(document.getElementById('soTinChi').value);
-            let diem10 = parseFloat(document.getElementById('diem10').value);
+            let diemChu = document.getElementById('diemChu').value;
 
-            if (!ten || isNaN(tinChi) || isNaN(diem10) || diem10 < 0 || diem10 > 10) {
-                alert("Vui lòng nhập đầy đủ và hợp lệ thông tin!");
+            // Kiểm tra xem đã chọn điểm chữ chưa
+            if (!ten || isNaN(tinChi) || !diemChu) {
+                alert("Vui lòng nhập tên môn, số tín chỉ và chọn điểm chữ!");
                 return;
             }
 
+            // Thêm vào mảng
             danhSachMon.push({
+                maHP: maHP || "---",
                 ten: ten,
                 tinChi: tinChi,
-                diem10: diem10,
-                diem4: quyDoiHUST(diem10)
+                diemChu: diemChu, // Lưu điểm chữ
+                diem4: quyDoiHUST(diemChu) // Tính điểm hệ 4 từ điểm chữ
             });
 
-            // Xóa trắng ô nhập sau khi thêm
+            // Xóa trắng ô nhập sau khi thêm (giữ lại điểm chữ mặc định để chọn tiếp)
+            document.getElementById('maHP').value = '';
             document.getElementById('tenMon').value = '';
             document.getElementById('soTinChi').value = '';
-            document.getElementById('diem10').value = '';
+            document.getElementById('diemChu').value = '';
 
             capNhatGiaoDien();
         }
@@ -167,24 +219,21 @@
             let tongDiem4 = 0;
 
             danhSachMon.forEach((mon, index) => {
-                // Thêm dòng vào bảng
                 let row = `<tr>
+                    <td><strong>${mon.maHP}</strong></td>
                     <td>${mon.ten}</td>
                     <td>${mon.tinChi}</td>
-                    <td>${mon.diem10}</td>
-                    <td>${mon.diem4}</td>
+                    <td><strong><span style="color:#cc0000">${mon.diemChu}</span></strong></td>
+                    <td>${mon.diem4.toFixed(1)}</td>
                     <td><button class="delete-btn" onclick="xoaMon(${index})">Xóa</button></td>
                 </tr>`;
                 tbody.innerHTML += row;
 
-                // Cộng dồn để tính CPA
                 tongTinChi += mon.tinChi;
                 tongDiem4 += (mon.diem4 * mon.tinChi);
             });
 
-            // Hiển thị kết quả
             document.getElementById('tongTin').innerText = tongTinChi;
-            
             let cpa = tongTinChi === 0 ? 0 : (tongDiem4 / tongTinChi);
             document.getElementById('diemCPA').innerText = cpa.toFixed(2);
         }
