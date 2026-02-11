@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính CPA HUST</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #cc0000; /* Màu đỏ đăc trưng của Bách Khoa */
+        }
+        .input-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            flex: 1;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #cc0000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #a30000;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .result-section {
+            margin-top: 20px;
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .highlight {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Công cụ tính CPA - HUST</h1>
+
+    <div class="input-section">
+        <input type="text" id="tenMon" placeholder="Tên môn học (VD: Giải tích 1)">
+        <input type="number" id="soTinChi" placeholder="Số tín chỉ" min="1">
+        <input type="number" id="diem10" placeholder="Điểm hệ 10" step="0.1" min="0" max="10">
+        <button onclick="themMonHoc()">Thêm môn</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tên môn</th>
+                <th>Tín chỉ</th>
+                <th>Điểm hệ 10</th>
+                <th>Điểm hệ 4</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="bangMonHoc">
+            </tbody>
+    </table>
+
+    <div class="result-section">
+        <p>Tổng số tín chỉ tính CPA: <span id="tongTin" class="highlight">0</span></p>
+        <p>Điểm CPA tích lũy: <span id="diemCPA" class="highlight">0.00</span></p>
+    </div>
+
+    <script>
+        let danhSachMon = [];
+
+        // Quy đổi điểm HUST
+        function quyDoiHUST(diem10) {
+            if (diem10 >= 8.5) return 4.0;
+            if (diem10 >= 8.0) return 3.5;
+            if (diem10 >= 7.0) return 3.0;
+            if (diem10 >= 6.5) return 2.5;
+            if (diem10 >= 5.5) return 2.0;
+            if (diem10 >= 5.0) return 1.5;
+            if (diem10 >= 4.0) return 1.0;
+            return 0.0;
+        }
+
+        // Thêm môn học mới
+        function themMonHoc() {
+            let ten = document.getElementById('tenMon').value;
+            let tinChi = parseFloat(document.getElementById('soTinChi').value);
+            let diem10 = parseFloat(document.getElementById('diem10').value);
+
+            if (!ten || isNaN(tinChi) || isNaN(diem10) || diem10 < 0 || diem10 > 10) {
+                alert("Vui lòng nhập đầy đủ và hợp lệ thông tin!");
+                return;
+            }
+
+            danhSachMon.push({
+                ten: ten,
+                tinChi: tinChi,
+                diem10: diem10,
+                diem4: quyDoiHUST(diem10)
+            });
+
+            // Xóa trắng ô nhập sau khi thêm
+            document.getElementById('tenMon').value = '';
+            document.getElementById('soTinChi').value = '';
+            document.getElementById('diem10').value = '';
+
+            capNhatGiaoDien();
+        }
+
+        // Xóa môn học
+        function xoaMon(index) {
+            danhSachMon.splice(index, 1);
+            capNhatGiaoDien();
+        }
+
+        // Cập nhật bảng và tính CPA
+        function capNhatGiaoDien() {
+            let tbody = document.getElementById('bangMonHoc');
+            tbody.innerHTML = '';
+            
+            let tongTinChi = 0;
+            let tongDiem4 = 0;
+
+            danhSachMon.forEach((mon, index) => {
+                // Thêm dòng vào bảng
+                let row = `<tr>
+                    <td>${mon.ten}</td>
+                    <td>${mon.tinChi}</td>
+                    <td>${mon.diem10}</td>
+                    <td>${mon.diem4}</td>
+                    <td><button class="delete-btn" onclick="xoaMon(${index})">Xóa</button></td>
+                </tr>`;
+                tbody.innerHTML += row;
+
+                // Cộng dồn để tính CPA
+                tongTinChi += mon.tinChi;
+                tongDiem4 += (mon.diem4 * mon.tinChi);
+            });
+
+            // Hiển thị kết quả
+            document.getElementById('tongTin').innerText = tongTinChi;
+            
+            let cpa = tongTinChi === 0 ? 0 : (tongDiem4 / tongTinChi);
+            document.getElementById('diemCPA').innerText = cpa.toFixed(2);
+        }
+    </script>
+</body>
+</html>
