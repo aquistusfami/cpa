@@ -136,7 +136,6 @@
     </div>
 
     <script>
-        // CƠ SỞ DỮ LIỆU MÔN HỌC (Bạn có thể thêm thủ công các môn phổ biến vào đây)
         const coSoDuLieuHUST = {
             "IT1110": { ten: "Tin học đại cương", tinChi: 4 },
             "MI1111": { ten: "Giải tích 1", tinChi: 4 },
@@ -146,21 +145,16 @@
             "PH1120": { ten: "Vật lý đại cương 2", tinChi: 3 }
         };
 
-        // Khởi tạo mảng danh sách môn học
         let danhSachMon = [];
 
-        // --- TÍNH NĂNG MỚI: TẢI DỮ LIỆU TỪ LOCAL STORAGE KHI MỞ WEB ---
         function taiDuLieuTuBoNho() {
             let duLieuDaLuu = localStorage.getItem("duLieuCPA_HUST");
             if (duLieuDaLuu) {
-                // Biến chuỗi JSON trở lại thành mảng Javascript
                 danhSachMon = JSON.parse(duLieuDaLuu);
-                // Hiển thị ra màn hình
                 capNhatGiaoDien();
             }
         }
 
-        // Tự động điền thông tin khi gõ Mã HP
         function tuDongDienThongTin() {
             let maHPNhapVao = document.getElementById('maHP').value.toUpperCase().trim();
             let thongTinMon = coSoDuLieuHUST[maHPNhapVao];
@@ -171,7 +165,6 @@
             }
         }
 
-        // Quy đổi thẳng từ Điểm Chữ sang hệ 4
         function quyDoiHUST(diemChu) {
             const bangDiem = {
                 "A": 4.0, "B+": 3.5, "B": 3.0, "C+": 2.5, "C": 2.0, "D+": 1.5, "D": 1.0, "F": 0.0
@@ -179,10 +172,10 @@
             return bangDiem[diemChu] !== undefined ? bangDiem[diemChu] : 0.0;
         }
 
-        // Thêm môn học mới
         function themMonHoc() {
             let maHP = document.getElementById('maHP').value.toUpperCase().trim();
-            let ten = document.getElementById('tenMon').value;
+            // Lấy tên môn và xóa khoảng trắng thừa ở hai đầu
+            let ten = document.getElementById('tenMon').value.trim(); 
             let tinChi = parseFloat(document.getElementById('soTinChi').value);
             let diemChu = document.getElementById('diemChu').value;
 
@@ -190,6 +183,22 @@
                 alert("Vui lòng nhập tên môn, số tín chỉ và chọn điểm chữ!");
                 return;
             }
+
+            // --- TÍNH NĂNG MỚI: KIỂM TRA TRÙNG LẶP ---
+            let daTonTai = danhSachMon.some(mon => {
+                // Kiểm tra xem Mã HP (nếu có nhập) có bị trùng không
+                let trungMa = (maHP !== "" && mon.maHP === maHP);
+                // Kiểm tra xem Tên môn học có bị trùng không (không phân biệt hoa/thường)
+                let trungTen = (mon.ten.toLowerCase() === ten.toLowerCase());
+                
+                return trungMa || trungTen;
+            });
+
+            if (daTonTai) {
+                alert("⚠️ Môn học này đã tồn tại trong bảng điểm của bạn! \nNếu bạn học cải thiện, vui lòng 'Xóa' môn cũ ở dưới bảng trước khi thêm điểm mới.");
+                return; // Lệnh return này sẽ dừng việc chạy code ở đây, không cho thêm vào mảng nữa
+            }
+            // ----------------------------------------
 
             danhSachMon.push({
                 maHP: maHP || "---",
@@ -199,7 +208,7 @@
                 diem4: quyDoiHUST(diemChu)
             });
 
-            // Xóa trắng ô nhập sau khi thêm
+            // Xóa trắng ô nhập sau khi thêm thành công
             document.getElementById('maHP').value = '';
             document.getElementById('tenMon').value = '';
             document.getElementById('soTinChi').value = '';
@@ -208,13 +217,11 @@
             capNhatGiaoDien();
         }
 
-        // Xóa môn học
         function xoaMon(index) {
             danhSachMon.splice(index, 1);
             capNhatGiaoDien();
         }
 
-        // Cập nhật bảng, tính CPA và LƯU LẠI DỮ LIỆU
         function capNhatGiaoDien() {
             let tbody = document.getElementById('bangMonHoc');
             tbody.innerHTML = '';
@@ -237,17 +244,13 @@
                 tongDiem4 += (mon.diem4 * mon.tinChi);
             });
 
-            // Hiển thị kết quả
             document.getElementById('tongTin').innerText = tongTinChi;
             let cpa = tongTinChi === 0 ? 0 : (tongDiem4 / tongTinChi);
             document.getElementById('diemCPA').innerText = cpa.toFixed(2);
 
-            // --- TÍNH NĂNG MỚI: LƯU TRẠNG THÁI MỚI NHẤT VÀO LOCAL STORAGE ---
-            // Biến mảng danhSachMon thành chuỗi văn bản (JSON) để lưu trữ
             localStorage.setItem("duLieuCPA_HUST", JSON.stringify(danhSachMon));
         }
 
-        // Gọi hàm tải dữ liệu ngay khi trang web vừa load xong
         window.onload = taiDuLieuTuBoNho;
     </script>
 </body>
