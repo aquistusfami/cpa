@@ -665,8 +665,11 @@
 
           <div class="form-group">
             <label>Tên môn học</label>
-            <input type="text" id="inputName" placeholder="Tên học phần">
-          </div>
+            <div class="input-wrapper">
+              <input type="text" id="inputName" placeholder="Nhập tên học phần..." autocomplete="off" oninput="onNameInput()">
+              <div class="autocomplete-list" id="acListName"></div>
+            </div>
+            </div>
 
           <div class="form-group">
             <label>Số tín chỉ</label>
@@ -809,22 +812,53 @@ function onCodeInput() {
 
   list.classList.add('show');
 }
+function onNameInput() {
+  const q = document.getElementById('inputName').value.trim().toLowerCase();
+  const list = document.getElementById('acListName');
 
+  // Khởi động tìm kiếm nếu gõ từ 2 ký tự trở lên
+  if (q.length < 2) { list.classList.remove('show'); return; }
+
+  // Lọc dữ liệu: Tìm các môn học có tên chứa từ khóa vừa nhập
+  const results = DB_ENTRIES.filter(e =>
+    e.ten.toLowerCase().includes(q)
+  ).slice(0, 8); // Chỉ hiện tối đa 8 kết quả cho gọn
+
+  if (results.length === 0) { list.classList.remove('show'); return; }
+
+  // Hiển thị danh sách gợi ý
+  list.innerHTML = results.map(r => `
+    <div class="ac-item" onclick="selectCourse('${r.code}')">
+      <span class="ac-code">${r.code}</span>
+      <span class="ac-name">${r.ten}</span>
+      <span class="ac-credits">${r.tinChi}TC</span>
+    </div>
+  `).join('');
+
+  list.classList.add('show');
+}
 function selectCourse(code) {
-  // Tìm môn học trong mảng DB_ENTRIES
   const info = DB_ENTRIES.find(c => c.code === code);
-  
   if (!info) return;
   
   document.getElementById('inputCode').value = info.code;
   document.getElementById('inputName').value = info.ten;
   document.getElementById('inputCredits').value = info.tinChi;
+  
+  // Ẩn cả 2 bảng gợi ý sau khi chọn
   document.getElementById('acList').classList.remove('show');
+  document.getElementById('acListName').classList.remove('show');
 }
 
 document.addEventListener('click', e => {
   if (!e.target.closest('.input-wrapper')) {
-    document.getElementById('acList').classList.remove('show');
+    // Ẩn bảng gợi ý mã môn
+    let listCode = document.getElementById('acList');
+    if (listCode) listCode.classList.remove('show');
+
+    // Ẩn bảng gợi ý tên môn
+    let listName = document.getElementById('acListName');
+    if (listName) listName.classList.remove('show');
   }
 });
 
