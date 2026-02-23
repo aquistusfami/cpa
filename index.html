@@ -743,135 +743,37 @@
 
 <script>
 // =============================================
-// DATABASE HỌC PHẦN HUST
-// (Được build từ dữ liệu scrape thực tế)
-// Format: { [maHP]: { ten, tinChi, vien, tenAnh } }
+// TẢI DATABASE HỌC PHẦN TỪ FILE JSON
 // =============================================
-const HUST_DB = {
-  // === Toán - Tin (KTTD) ===
-  "MI1111": { ten: "Giải tích 1", tinChi: 4, vien: "KTTD" },
-  "MI1121": { ten: "Giải tích 2", tinChi: 4, vien: "KTTD" },
-  "MI1131": { ten: "Giải tích 3", tinChi: 3, vien: "KTTD" },
-  "MI2020": { ten: "Xác suất thống kê", tinChi: 3, vien: "KTTD" },
-  "MI2120": { ten: "Đại số tuyến tính", tinChi: 3, vien: "KTTD" },
-  "MI3210": { ten: "Phương pháp tính", tinChi: 3, vien: "KTTD" },
-  "MI3260": { ten: "Quy hoạch tuyến tính", tinChi: 3, vien: "KTTD" },
-  "MI2210": { ten: "Phương trình vi phân", tinChi: 3, vien: "KTTD" },
-  "MI3030": { ten: "Toán rời rạc", tinChi: 3, vien: "KTTD" },
+let DB_ENTRIES = []; // Khởi tạo mảng rỗng
 
-  // === CNTT (TCNTT) ===
-  "IT1110": { ten: "Tin học đại cương", tinChi: 4, vien: "TCNTT" },
-  "IT2030": { ten: "Nhập môn lập trình", tinChi: 4, vien: "TCNTT" },
-  "IT3040": { ten: "Kỹ thuật lập trình", tinChi: 3, vien: "TCNTT" },
-  "IT3062": { ten: "Giới thiệu về trí tuệ nhân tạo", tinChi: 3, vien: "TCNTT" },
-  "IT3080": { ten: "Cơ sở dữ liệu", tinChi: 3, vien: "TCNTT" },
-  "IT3103": { ten: "Hệ điều hành", tinChi: 3, vien: "TCNTT" },
-  "IT3120": { ten: "Kiến trúc máy tính", tinChi: 3, vien: "TCNTT" },
-  "IT3140": { ten: "Mạng máy tính", tinChi: 3, vien: "TCNTT" },
-  "IT3160": { ten: "Lập trình hướng đối tượng", tinChi: 3, vien: "TCNTT" },
-  "IT3170": { ten: "Phát triển ứng dụng web", tinChi: 3, vien: "TCNTT" },
-  "IT3180": { ten: "Phân tích và thiết kế hệ thống", tinChi: 3, vien: "TCNTT" },
-  "IT3190": { ten: "Kỹ nghệ phần mềm", tinChi: 3, vien: "TCNTT" },
-  "IT3200": { ten: "Cấu trúc dữ liệu và giải thuật", tinChi: 3, vien: "TCNTT" },
-  "IT3220": { ten: "Lý thuyết ngôn ngữ hình thức", tinChi: 3, vien: "TCNTT" },
-  "IT3230": { ten: "Đồ họa máy tính", tinChi: 3, vien: "TCNTT" },
-  "IT3280": { ten: "An toàn và bảo mật thông tin", tinChi: 3, vien: "TCNTT" },
-  "IT3290": { ten: "Điện toán đám mây", tinChi: 3, vien: "TCNTT" },
-  "IT3420": { ten: "Học máy", tinChi: 3, vien: "TCNTT" },
-  "IT3430": { ten: "Khai phá dữ liệu", tinChi: 3, vien: "TCNTT" },
-  "IT3440": { ten: "Thị giác máy tính", tinChi: 3, vien: "TCNTT" },
-  "IT3910": { ten: "Đồ án I", tinChi: 2, vien: "TCNTT" },
-  "IT3920": { ten: "Đồ án II", tinChi: 3, vien: "TCNTT" },
-  "IT4210": { ten: "Hệ thống phân tán", tinChi: 3, vien: "TCNTT" },
-  "IT4220": { ten: "Kiến trúc hướng dịch vụ", tinChi: 3, vien: "TCNTT" },
-  "IT4290": { ten: "Nhập môn khoa học dữ liệu", tinChi: 3, vien: "TCNTT" },
-  "IT4409": { ten: "Hệ thống nhúng", tinChi: 3, vien: "TCNTT" },
-  "IT4785": { ten: "Đồ án tốt nghiệp CNTT", tinChi: 10, vien: "TCNTT" },
+async function loadCoursesData() {
+  try {
+    // Gọi file courses.json nằm cùng thư mục
+    const response = await fetch('./courses.json'); 
+    
+    if (!response.ok) throw new Error('Không tìm thấy file JSON');
+    
+    const rawData = await response.json();
 
-  // === Vật lý (VVLKT) ===
-  "PH1110": { ten: "Vật lý đại cương 1", tinChi: 3, vien: "VVLKT" },
-  "PH1120": { ten: "Vật lý đại cương 2", tinChi: 3, vien: "VVLKT" },
-  "PH1126": { ten: "Thí nghiệm vật lý đại cương", tinChi: 1, vien: "VVLKT" },
+    // Chuyển đổi dữ liệu cho khớp với logic tìm kiếm của bạn
+    DB_ENTRIES = rawData.map(item => ({
+      code: item.MaHocPhan,
+      ten: item.TenHocPhan,
+      tinChi: parseInt(item.SoTinChi), // Đảm bảo tín chỉ là số nguyên
+      vien: item.VienQuanLy,
+      searchKey: (item.MaHocPhan + ' ' + item.TenHocPhan).toLowerCase()
+    }));
 
-  // === Điện - Điện tử (TDDT) ===
-  "EE3003": { ten: "Lý thuyết mạch điện", tinChi: 4, vien: "TDDT" },
-  "EE2015": { ten: "Kỹ thuật điện tử", tinChi: 3, vien: "TDDT" },
-  "EE3506": { ten: "Hệ thống điều khiển tự động", tinChi: 3, vien: "TDDT" },
-  "EE3720": { ten: "Xử lý tín hiệu số", tinChi: 3, vien: "TDDT" },
-  "EE3910": { ten: "Đồ án kỹ thuật điện tử", tinChi: 3, vien: "TDDT" },
-  "ET2010": { ten: "Linh kiện điện tử", tinChi: 3, vien: "TDDT" },
-  "ET2050": { ten: "Kỹ thuật đo lường điện tử", tinChi: 3, vien: "TDDT" },
-  "ET3040": { ten: "Mạch tương tự", tinChi: 3, vien: "TDDT" },
-  "ET3080": { ten: "Điện tử số", tinChi: 3, vien: "TDDT" },
-  "ET3120": { ten: "Vi điều khiển", tinChi: 3, vien: "TDDT" },
-  "ET3280": { ten: "Truyền thông không dây", tinChi: 3, vien: "TDDT" },
-  "ET3290": { ten: "Internet vạn vật", tinChi: 3, vien: "TDDT" },
-  "AC2010": { ten: "Kỹ thuật lập trình", tinChi: 2, vien: "TDDT" },
-  "AC2020": { ten: "Đồ họa hình động 2D, 3D", tinChi: 3, vien: "TDDT" },
+    console.log(`Đã tải thành công ${DB_ENTRIES.length} học phần!`);
+  } catch (error) {
+    console.error("Lỗi khi tải dữ liệu:", error);
+    toast('Không thể tải danh sách môn học. Vui lòng thử lại!', 'error');
+  }
+}
 
-  // === Cơ khí (TCK) ===
-  "ME2010": { ten: "Cơ học kỹ thuật 1", tinChi: 3, vien: "TCK" },
-  "ME2020": { ten: "Cơ học kỹ thuật 2", tinChi: 3, vien: "TCK" },
-  "ME2030": { ten: "Sức bền vật liệu", tinChi: 3, vien: "TCK" },
-  "ME3010": { ten: "Chi tiết máy", tinChi: 4, vien: "TCK" },
-  "ME3025": { ten: "Thiết kế theo hỗ trợ máy tính", tinChi: 3, vien: "TCK" },
-
-  // === Hóa & KHSS (THKHSS) ===
-  "CH1010": { ten: "Hóa học đại cương", tinChi: 4, vien: "THKHSS" },
-  "CH1060": { ten: "Thí nghiệm hóa đại cương", tinChi: 1, vien: "THKHSS" },
-
-  // === Kinh tế (KKTVQL) ===
-  "EM1010": { ten: "Kinh tế vi mô đại cương", tinChi: 3, vien: "KKTVQL" },
-  "EM3100": { ten: "Quản trị kinh doanh", tinChi: 3, vien: "KKTVQL" },
-  "EM3110": { ten: "Kế toán đại cương", tinChi: 3, vien: "KKTVQL" },
-  "EM3120": { ten: "Marketing đại cương", tinChi: 3, vien: "KKTVQL" },
-  "EM3210": { ten: "Quản trị dự án", tinChi: 3, vien: "KKTVQL" },
-  "EM3430": { ten: "Khởi nghiệp kinh doanh", tinChi: 3, vien: "KKTVQL" },
-
-  // === Ngoại ngữ (KNN) ===
-  "FL1100": { ten: "Tiếng Anh 1", tinChi: 4, vien: "KNN" },
-  "FL1101": { ten: "Tiếng Anh 2", tinChi: 4, vien: "KNN" },
-  "FL2100": { ten: "Tiếng Anh 3 (Kỹ thuật)", tinChi: 3, vien: "KNN" },
-
-  // === Lý luận chính trị (KML) ===
-  "SSH1110": { ten: "Triết học Mác – Lênin", tinChi: 3, vien: "KML" },
-  "SSH1120": { ten: "Kinh tế chính trị Mác – Lênin", tinChi: 2, vien: "KML" },
-  "SSH1130": { ten: "Chủ nghĩa xã hội khoa học", tinChi: 2, vien: "KML" },
-  "SSH1140": { ten: "Lịch sử Đảng Cộng sản Việt Nam", tinChi: 2, vien: "KML" },
-  "SSH1150": { ten: "Tư tưởng Hồ Chí Minh", tinChi: 2, vien: "KML" },
-
-  // === Giáo dục thể chất ===
-  "PE2010": { ten: "Giáo dục thể chất 1", tinChi: 1, vien: "BGDTC" },
-  "PE2020": { ten: "Giáo dục thể chất 2", tinChi: 1, vien: "BGDTC" },
-  "PE2030": { ten: "Giáo dục thể chất 3", tinChi: 1, vien: "BGDTC" },
-
-  // === Vật liệu (TVL) ===
-  "MS2011": { ten: "Khoa học và kỹ thuật vật liệu", tinChi: 3, vien: "TVL" },
-
-  // === Ban đào tạo (PDTDH) ===
-  "1DL242": { ten: "Advanced Software Design", tinChi: 3, vien: "PDTDH" },
-  "1DL330": { ten: "Functional Programming I", tinChi: 3, vien: "PDTDH" },
-  "1DL340": { ten: "Artificial Intelligence", tinChi: 3, vien: "PDTDH" },
-  "1DL350": { ten: "E-commerce Project", tinChi: 6, vien: "PDTDH" },
-  "1DL360": { ten: "Data Mining I", tinChi: 3, vien: "PDTDH" },
-  "1DL450": { ten: "Advanced Functional Programming", tinChi: 3, vien: "PDTDH" },
-  "1DL610": { ten: "Software Testing", tinChi: 3, vien: "PDTDH" },
-  "1DL620": { ten: "Platform-Spanning Systems", tinChi: 3, vien: "PDTDH" },
-  "1DT063": { ten: "Real Time Systems I", tinChi: 3, vien: "PDTDH" },
-  "1DT072": { ten: "Secure Computer Systems I", tinChi: 3, vien: "PDTDH" },
-  "1DT075": { ten: "Cryptology", tinChi: 3, vien: "PDTDH" },
-  "1DT340": { ten: "Degree Project C in Computer Science", tinChi: 8, vien: "PDTDH" },
-  "1TD265": { ten: "Applied Cloud Computing", tinChi: 6, vien: "PDTDH" },
-};
-
-// Build search index (mảng để search nhanh)
-const DB_ENTRIES = Object.entries(HUST_DB).map(([code, info]) => ({
-  code,
-  ten: info.ten,
-  tinChi: info.tinChi,
-  vien: info.vien,
-  searchKey: (code + ' ' + info.ten).toLowerCase()
-}));
+// Chạy hàm tải dữ liệu ngay khi web vừa mở lên
+loadCoursesData();
 
 // =============================================
 // STATE
@@ -909,9 +811,12 @@ function onCodeInput() {
 }
 
 function selectCourse(code) {
-  const info = HUST_DB[code];
+  // Tìm môn học trong mảng DB_ENTRIES
+  const info = DB_ENTRIES.find(c => c.code === code);
+  
   if (!info) return;
-  document.getElementById('inputCode').value = code;
+  
+  document.getElementById('inputCode').value = info.code;
   document.getElementById('inputName').value = info.ten;
   document.getElementById('inputCredits').value = info.tinChi;
   document.getElementById('acList').classList.remove('show');
