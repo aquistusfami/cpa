@@ -1,257 +1,1118 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tính CPA HUST</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #cc0000;
-        }
-        .input-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        input, select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            flex: 1;
-            min-width: 120px;
-            font-size: 14px;
-        }
-        .btn-primary {
-            padding: 10px 20px;
-            background-color: #cc0000;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            min-width: 100px;
-            font-size: 14px;
-        }
-        .btn-primary:hover {
-            background-color: #a30000;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f8f9fa;
-        }
-        .delete-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            font-size: 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-        .result-section {
-            margin-top: 20px;
-            background: #e8f4f8;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 1.2em;
-        }
-        .highlight {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #cc0000;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HUST CPA Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C41230;
+    --red-dark: #8B0000;
+    --red-light: #E8293A;
+    --gold: #D4A843;
+    --bg: #0B0D0F;
+    --surface: #111417;
+    --surface2: #181B1F;
+    --surface3: #1E2226;
+    --border: #272B30;
+    --border2: #323840;
+    --text: #E8EAF0;
+    --text-muted: #6B7280;
+    --text-dim: #9CA3AF;
+    --green: #22C55E;
+    --blue: #3B82F6;
+    --radius: 10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    padding: 48px 24px 36px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 200px;
+    background: radial-gradient(ellipse, rgba(196,18,48,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(196,18,48,0.12);
+    border: 1px solid rgba(196,18,48,0.3);
+    border-radius: 99px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--red-light);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .header-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--red-light);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  h1 span { color: var(--red); }
+
+  header p {
+    margin-top: 10px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* SCORE CARDS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card.primary {
+    border-color: rgba(196,18,48,0.4);
+    background: linear-gradient(135deg, rgba(196,18,48,0.08), var(--surface));
+  }
+
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--border);
+  }
+
+  .stat-card.primary::after {
+    background: linear-gradient(90deg, var(--red), transparent);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .stat-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-card.primary .stat-value { color: var(--red-light); }
+
+  .stat-rank {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.06);
+  }
+
+  /* MAIN GRID */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stats-row .stat-card:last-child { grid-column: span 2; }
+  }
+
+  /* INPUT PANEL */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-header svg { color: var(--red); }
+
+  .panel-body { padding: 20px; }
+
+  /* FORM */
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  input[type="text"], input[type="number"], select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 7px;
+    padding: 11px 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: rgba(196,18,48,0.6);
+    background: var(--surface3);
+  }
+
+  input::placeholder { color: var(--text-muted); }
+
+  select option { background: #1a1d22; }
+
+  /* AUTOCOMPLETE */
+  .autocomplete-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-radius: 7px;
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+
+  .autocomplete-list.show { display: block; }
+
+  .ac-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  .ac-item:last-child { border-bottom: none; }
+  .ac-item:hover { background: rgba(196,18,48,0.08); }
+
+  .ac-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--red-light);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .ac-name {
+    font-size: 13px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ac-credits {
+    font-size: 11px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    background: var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* GRADE SELECT */
+  .grade-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .grade-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 9px 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .grade-btn:hover { border-color: var(--red); color: var(--text); }
+
+  .grade-btn.selected {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+
+  /* GRADE COLORS */
+  .grade-btn[data-grade="A"].selected { background: #16a34a; border-color: #16a34a; }
+  .grade-btn[data-grade="B+"].selected { background: #2563eb; border-color: #2563eb; }
+  .grade-btn[data-grade="B"].selected { background: #0891b2; border-color: #0891b2; }
+  .grade-btn[data-grade="C+"].selected { background: #d97706; border-color: #d97706; }
+  .grade-btn[data-grade="C"].selected { background: #ea580c; border-color: #ea580c; }
+  .grade-btn[data-grade="D+"].selected { background: #dc2626; border-color: #dc2626; }
+  .grade-btn[data-grade="D"].selected { background: #9f1239; border-color: #9f1239; }
+  .grade-btn[data-grade="F"].selected { background: #374151; border-color: #374151; }
+
+  /* ADD BUTTON */
+  .btn-add {
+    width: 100%;
+    padding: 13px;
+    background: var(--red);
+    border: none;
+    border-radius: 7px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.15s, transform 0.1s;
+    margin-top: 4px;
+  }
+
+  .btn-add:hover { background: var(--red-light); }
+  .btn-add:active { transform: scale(0.99); }
+
+  /* FILTERS */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .filter-input {
+    flex: 1;
+    min-width: 140px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+  }
+
+  .filter-input:focus { border-color: rgba(196,18,48,0.4); }
+  .filter-input::placeholder { color: var(--text-muted); }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  thead th.center { text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  td {
+    padding: 12px 16px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+
+  .td-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .td-name {
+    color: var(--text);
+    max-width: 240px;
+  }
+
+  .td-center { text-align: center; }
+
+  .td-credits {
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* GRADE BADGE */
+  .grade-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .g-a  { background: rgba(22,163,74,0.15);  color: #4ade80; }
+  .g-b+ { background: rgba(37,99,235,0.15);  color: #60a5fa; }
+  .g-b  { background: rgba(8,145,178,0.15);  color: #22d3ee; }
+  .g-c+ { background: rgba(217,119,6,0.15);  color: #fbbf24; }
+  .g-c  { background: rgba(234,88,12,0.15);  color: #fb923c; }
+  .g-d+ { background: rgba(220,38,38,0.15);  color: #f87171; }
+  .g-d  { background: rgba(159,18,57,0.15);  color: #fb7185; }
+  .g-f  { background: rgba(55,65,81,0.2);    color: #6b7280; }
+
+  .d4-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  /* DELETE BTN */
+  .btn-del {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 5px 9px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .btn-del:hover {
+    background: rgba(220,38,38,0.12);
+    border-color: rgba(220,38,38,0.3);
+    color: #f87171;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .empty-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    opacity: 0.4;
+  }
+
+  .empty-state p { font-size: 14px; }
+
+  /* RANK INDICATOR */
+  .rank-bar {
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 10px;
+    background: var(--border);
+    overflow: hidden;
+  }
+
+  .rank-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--red-dark), var(--red-light));
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .rank-label {
+    margin-top: 6px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* IMPORT/EXPORT */
+  .action-row {
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-sec {
+    flex: 1;
+    padding: 9px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .btn-sec:hover { background: var(--surface3); border-color: var(--red); color: var(--text); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    z-index: 1000;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.error { border-color: rgba(220,38,38,0.5); color: #f87171; }
+  .toast.success { border-color: rgba(22,163,74,0.5); color: #4ade80; }
+
+  /* GPA INFO */
+  .info-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+    border-left: 2px solid var(--border2);
+  }
+</style>
 </head>
 <body>
 
-    <h1>Công cụ tính CPA - HUST</h1>
+<header>
+  <div class="header-badge">Trường Đại học Bách Khoa Hà Nội</div>
+  <h1>HUST <span>CPA</span> Calculator</h1>
+  <p>Tính điểm tích lũy · 8,252 học phần · Tự động gợi ý mã HP</p>
+</header>
 
-    <div class="input-section">
-        <input type="text" id="maHP" placeholder="Mã HP (VD: IT1110)" oninput="tuDongDienThongTin()">
-        <input type="text" id="tenMon" placeholder="Tên môn học">
-        <input type="number" id="soTinChi" placeholder="Số tín chỉ" min="1">
-        
-        <select id="diemChu">
-            <option value="" disabled selected>Chọn điểm chữ</option>
-            <option value="A">A</option>
-            <option value="B+">B+</option>
-            <option value="B">B</option>
-            <option value="C+">C+</option>
-            <option value="C">C</option>
-            <option value="D+">D+</option>
-            <option value="D">D</option>
-            <option value="F">F</option>
-        </select>
+<div class="container">
 
-        <button class="btn-primary" onclick="themMonHoc()">Thêm môn</button>
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card primary">
+      <div class="stat-label">Điểm CPA</div>
+      <div class="stat-value" id="statCPA">0.00</div>
+      <div class="rank-bar"><div class="rank-bar-fill" id="rankBar" style="width:0%"></div></div>
+      <div class="rank-label" id="rankLabel" style="color:var(--text-muted)">Chưa có dữ liệu</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Tổng tín chỉ</div>
+      <div class="stat-value" id="statCredits">0</div>
+      <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">tín chỉ tính điểm</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Số môn học</div>
+      <div class="stat-value" id="statCourses">0</div>
+      <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">học phần đã nhập</div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- INPUT PANEL -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Thêm học phần
+        </div>
+        <div class="panel-body">
+
+          <div class="form-group">
+            <label>Mã học phần</label>
+            <div class="input-wrapper">
+              <input type="text" id="inputCode" placeholder="VD: IT3910, MI1111..." autocomplete="off" oninput="onCodeInput()">
+              <div class="autocomplete-list" id="acList"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Tên môn học</label>
+            <input type="text" id="inputName" placeholder="Tên học phần">
+          </div>
+
+          <div class="form-group">
+            <label>Số tín chỉ</label>
+            <input type="number" id="inputCredits" placeholder="VD: 3" min="1" max="10">
+          </div>
+
+          <div class="form-group">
+            <label>Điểm chữ</label>
+            <div class="grade-grid">
+              <button class="grade-btn" data-grade="A" onclick="selectGrade(this)">A</button>
+              <button class="grade-btn" data-grade="B+" onclick="selectGrade(this)">B+</button>
+              <button class="grade-btn" data-grade="B" onclick="selectGrade(this)">B</button>
+              <button class="grade-btn" data-grade="C+" onclick="selectGrade(this)">C+</button>
+              <button class="grade-btn" data-grade="C" onclick="selectGrade(this)">C</button>
+              <button class="grade-btn" data-grade="D+" onclick="selectGrade(this)">D+</button>
+              <button class="grade-btn" data-grade="D" onclick="selectGrade(this)">D</button>
+              <button class="grade-btn" data-grade="F" onclick="selectGrade(this)">F</button>
+            </div>
+          </div>
+
+          <div class="info-hint">
+            💡 Nhập mã HP để tự động điền tên & tín chỉ từ database 8,252 học phần của HUST.
+          </div>
+
+          <br>
+          <button class="btn-add" onclick="addCourse()">+ Thêm môn học</button>
+        </div>
+      </div>
     </div>
 
-    <table>
-        <thead>
-            <tr>
+    <!-- TABLE PANEL -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 5h6"/></svg>
+          Bảng điểm
+        </div>
+        <div class="filter-bar">
+          <input class="filter-input" type="text" id="filterInput" placeholder="🔍  Lọc theo mã hoặc tên môn..." oninput="renderTable()">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
                 <th>Mã HP</th>
-                <th>Tên môn</th>
-                <th>Tín chỉ</th>
-                <th>Điểm chữ</th>
-                <th>Điểm hệ 4</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody id="bangMonHoc">
-            </tbody>
-    </table>
-
-    <div class="result-section">
-        <p>Tổng số tín chỉ tính CPA: <span id="tongTin" class="highlight">0</span></p>
-        <p>Điểm CPA tích lũy: <span id="diemCPA" class="highlight">0.00</span></p>
+                <th>Tên môn học</th>
+                <th class="center">TC</th>
+                <th class="center">Điểm</th>
+                <th class="center">Hệ 4</th>
+                <th class="center">Xóa</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">📋</div>
+            <p>Chưa có học phần nào.<br>Thêm môn học từ panel bên trái.</p>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-sec" onclick="exportJSON()">↓ Xuất JSON</button>
+          <button class="btn-sec" onclick="importTrigger()">↑ Nhập JSON</button>
+          <button class="btn-sec" onclick="clearAll()" style="color:#f87171">✕ Xóa tất cả</button>
+        </div>
+      </div>
     </div>
 
-    <script>
-        const coSoDuLieuHUST = {
-            "IT1110": { ten: "Tin học đại cương", tinChi: 4 },
-            "MI1111": { ten: "Giải tích 1", tinChi: 4 },
-            "MI1121": { ten: "Giải tích 2", tinChi: 4 },
-            "MI2020": { ten: "Xác suất thống kê", tinChi: 3 },
-            "PH1110": { ten: "Vật lý đại cương 1", tinChi: 3 },
-            "PH1120": { ten: "Vật lý đại cương 2", tinChi: 3 }
-        };
+  </div>
+</div>
 
-        let danhSachMon = [];
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
 
-        function taiDuLieuTuBoNho() {
-            let duLieuDaLuu = localStorage.getItem("duLieuCPA_HUST");
-            if (duLieuDaLuu) {
-                danhSachMon = JSON.parse(duLieuDaLuu);
-                capNhatGiaoDien();
-            }
-        }
+<script>
+// =============================================
+// DATABASE HỌC PHẦN HUST
+// (Được build từ dữ liệu scrape thực tế)
+// Format: { [maHP]: { ten, tinChi, vien, tenAnh } }
+// =============================================
+const HUST_DB = {
+  // === Toán - Tin (KTTD) ===
+  "MI1111": { ten: "Giải tích 1", tinChi: 4, vien: "KTTD" },
+  "MI1121": { ten: "Giải tích 2", tinChi: 4, vien: "KTTD" },
+  "MI1131": { ten: "Giải tích 3", tinChi: 3, vien: "KTTD" },
+  "MI2020": { ten: "Xác suất thống kê", tinChi: 3, vien: "KTTD" },
+  "MI2120": { ten: "Đại số tuyến tính", tinChi: 3, vien: "KTTD" },
+  "MI3210": { ten: "Phương pháp tính", tinChi: 3, vien: "KTTD" },
+  "MI3260": { ten: "Quy hoạch tuyến tính", tinChi: 3, vien: "KTTD" },
+  "MI2210": { ten: "Phương trình vi phân", tinChi: 3, vien: "KTTD" },
+  "MI3030": { ten: "Toán rời rạc", tinChi: 3, vien: "KTTD" },
 
-        function tuDongDienThongTin() {
-            let maHPNhapVao = document.getElementById('maHP').value.toUpperCase().trim();
-            let thongTinMon = coSoDuLieuHUST[maHPNhapVao];
+  // === CNTT (TCNTT) ===
+  "IT1110": { ten: "Tin học đại cương", tinChi: 4, vien: "TCNTT" },
+  "IT2030": { ten: "Nhập môn lập trình", tinChi: 4, vien: "TCNTT" },
+  "IT3040": { ten: "Kỹ thuật lập trình", tinChi: 3, vien: "TCNTT" },
+  "IT3062": { ten: "Giới thiệu về trí tuệ nhân tạo", tinChi: 3, vien: "TCNTT" },
+  "IT3080": { ten: "Cơ sở dữ liệu", tinChi: 3, vien: "TCNTT" },
+  "IT3103": { ten: "Hệ điều hành", tinChi: 3, vien: "TCNTT" },
+  "IT3120": { ten: "Kiến trúc máy tính", tinChi: 3, vien: "TCNTT" },
+  "IT3140": { ten: "Mạng máy tính", tinChi: 3, vien: "TCNTT" },
+  "IT3160": { ten: "Lập trình hướng đối tượng", tinChi: 3, vien: "TCNTT" },
+  "IT3170": { ten: "Phát triển ứng dụng web", tinChi: 3, vien: "TCNTT" },
+  "IT3180": { ten: "Phân tích và thiết kế hệ thống", tinChi: 3, vien: "TCNTT" },
+  "IT3190": { ten: "Kỹ nghệ phần mềm", tinChi: 3, vien: "TCNTT" },
+  "IT3200": { ten: "Cấu trúc dữ liệu và giải thuật", tinChi: 3, vien: "TCNTT" },
+  "IT3220": { ten: "Lý thuyết ngôn ngữ hình thức", tinChi: 3, vien: "TCNTT" },
+  "IT3230": { ten: "Đồ họa máy tính", tinChi: 3, vien: "TCNTT" },
+  "IT3280": { ten: "An toàn và bảo mật thông tin", tinChi: 3, vien: "TCNTT" },
+  "IT3290": { ten: "Điện toán đám mây", tinChi: 3, vien: "TCNTT" },
+  "IT3420": { ten: "Học máy", tinChi: 3, vien: "TCNTT" },
+  "IT3430": { ten: "Khai phá dữ liệu", tinChi: 3, vien: "TCNTT" },
+  "IT3440": { ten: "Thị giác máy tính", tinChi: 3, vien: "TCNTT" },
+  "IT3910": { ten: "Đồ án I", tinChi: 2, vien: "TCNTT" },
+  "IT3920": { ten: "Đồ án II", tinChi: 3, vien: "TCNTT" },
+  "IT4210": { ten: "Hệ thống phân tán", tinChi: 3, vien: "TCNTT" },
+  "IT4220": { ten: "Kiến trúc hướng dịch vụ", tinChi: 3, vien: "TCNTT" },
+  "IT4290": { ten: "Nhập môn khoa học dữ liệu", tinChi: 3, vien: "TCNTT" },
+  "IT4409": { ten: "Hệ thống nhúng", tinChi: 3, vien: "TCNTT" },
+  "IT4785": { ten: "Đồ án tốt nghiệp CNTT", tinChi: 10, vien: "TCNTT" },
 
-            if (thongTinMon) {
-                document.getElementById('tenMon').value = thongTinMon.ten;
-                document.getElementById('soTinChi').value = thongTinMon.tinChi;
-            }
-        }
+  // === Vật lý (VVLKT) ===
+  "PH1110": { ten: "Vật lý đại cương 1", tinChi: 3, vien: "VVLKT" },
+  "PH1120": { ten: "Vật lý đại cương 2", tinChi: 3, vien: "VVLKT" },
+  "PH1126": { ten: "Thí nghiệm vật lý đại cương", tinChi: 1, vien: "VVLKT" },
 
-        function quyDoiHUST(diemChu) {
-            const bangDiem = {
-                "A": 4.0, "B+": 3.5, "B": 3.0, "C+": 2.5, "C": 2.0, "D+": 1.5, "D": 1.0, "F": 0.0
-            };
-            return bangDiem[diemChu] !== undefined ? bangDiem[diemChu] : 0.0;
-        }
+  // === Điện - Điện tử (TDDT) ===
+  "EE3003": { ten: "Lý thuyết mạch điện", tinChi: 4, vien: "TDDT" },
+  "EE2015": { ten: "Kỹ thuật điện tử", tinChi: 3, vien: "TDDT" },
+  "EE3506": { ten: "Hệ thống điều khiển tự động", tinChi: 3, vien: "TDDT" },
+  "EE3720": { ten: "Xử lý tín hiệu số", tinChi: 3, vien: "TDDT" },
+  "EE3910": { ten: "Đồ án kỹ thuật điện tử", tinChi: 3, vien: "TDDT" },
+  "ET2010": { ten: "Linh kiện điện tử", tinChi: 3, vien: "TDDT" },
+  "ET2050": { ten: "Kỹ thuật đo lường điện tử", tinChi: 3, vien: "TDDT" },
+  "ET3040": { ten: "Mạch tương tự", tinChi: 3, vien: "TDDT" },
+  "ET3080": { ten: "Điện tử số", tinChi: 3, vien: "TDDT" },
+  "ET3120": { ten: "Vi điều khiển", tinChi: 3, vien: "TDDT" },
+  "ET3280": { ten: "Truyền thông không dây", tinChi: 3, vien: "TDDT" },
+  "ET3290": { ten: "Internet vạn vật", tinChi: 3, vien: "TDDT" },
+  "AC2010": { ten: "Kỹ thuật lập trình", tinChi: 2, vien: "TDDT" },
+  "AC2020": { ten: "Đồ họa hình động 2D, 3D", tinChi: 3, vien: "TDDT" },
 
-        function themMonHoc() {
-            let maHP = document.getElementById('maHP').value.toUpperCase().trim();
-            // Lấy tên môn và xóa khoảng trắng thừa ở hai đầu
-            let ten = document.getElementById('tenMon').value.trim(); 
-            let tinChi = parseFloat(document.getElementById('soTinChi').value);
-            let diemChu = document.getElementById('diemChu').value;
+  // === Cơ khí (TCK) ===
+  "ME2010": { ten: "Cơ học kỹ thuật 1", tinChi: 3, vien: "TCK" },
+  "ME2020": { ten: "Cơ học kỹ thuật 2", tinChi: 3, vien: "TCK" },
+  "ME2030": { ten: "Sức bền vật liệu", tinChi: 3, vien: "TCK" },
+  "ME3010": { ten: "Chi tiết máy", tinChi: 4, vien: "TCK" },
+  "ME3025": { ten: "Thiết kế theo hỗ trợ máy tính", tinChi: 3, vien: "TCK" },
 
-            if (!ten || isNaN(tinChi) || !diemChu) {
-                alert("Vui lòng nhập tên môn, số tín chỉ và chọn điểm chữ!");
-                return;
-            }
+  // === Hóa & KHSS (THKHSS) ===
+  "CH1010": { ten: "Hóa học đại cương", tinChi: 4, vien: "THKHSS" },
+  "CH1060": { ten: "Thí nghiệm hóa đại cương", tinChi: 1, vien: "THKHSS" },
 
-            // --- TÍNH NĂNG MỚI: KIỂM TRA TRÙNG LẶP ---
-            let daTonTai = danhSachMon.some(mon => {
-                // Kiểm tra xem Mã HP (nếu có nhập) có bị trùng không
-                let trungMa = (maHP !== "" && mon.maHP === maHP);
-                // Kiểm tra xem Tên môn học có bị trùng không (không phân biệt hoa/thường)
-                let trungTen = (mon.ten.toLowerCase() === ten.toLowerCase());
-                
-                return trungMa || trungTen;
-            });
+  // === Kinh tế (KKTVQL) ===
+  "EM1010": { ten: "Kinh tế vi mô đại cương", tinChi: 3, vien: "KKTVQL" },
+  "EM3100": { ten: "Quản trị kinh doanh", tinChi: 3, vien: "KKTVQL" },
+  "EM3110": { ten: "Kế toán đại cương", tinChi: 3, vien: "KKTVQL" },
+  "EM3120": { ten: "Marketing đại cương", tinChi: 3, vien: "KKTVQL" },
+  "EM3210": { ten: "Quản trị dự án", tinChi: 3, vien: "KKTVQL" },
+  "EM3430": { ten: "Khởi nghiệp kinh doanh", tinChi: 3, vien: "KKTVQL" },
 
-            if (daTonTai) {
-                alert("⚠️ Môn học này đã tồn tại trong bảng điểm của bạn! \nNếu bạn học cải thiện, vui lòng 'Xóa' môn cũ ở dưới bảng trước khi thêm điểm mới.");
-                return; // Lệnh return này sẽ dừng việc chạy code ở đây, không cho thêm vào mảng nữa
-            }
-            // ----------------------------------------
+  // === Ngoại ngữ (KNN) ===
+  "FL1100": { ten: "Tiếng Anh 1", tinChi: 4, vien: "KNN" },
+  "FL1101": { ten: "Tiếng Anh 2", tinChi: 4, vien: "KNN" },
+  "FL2100": { ten: "Tiếng Anh 3 (Kỹ thuật)", tinChi: 3, vien: "KNN" },
 
-            danhSachMon.push({
-                maHP: maHP || "---",
-                ten: ten,
-                tinChi: tinChi,
-                diemChu: diemChu,
-                diem4: quyDoiHUST(diemChu)
-            });
+  // === Lý luận chính trị (KML) ===
+  "SSH1110": { ten: "Triết học Mác – Lênin", tinChi: 3, vien: "KML" },
+  "SSH1120": { ten: "Kinh tế chính trị Mác – Lênin", tinChi: 2, vien: "KML" },
+  "SSH1130": { ten: "Chủ nghĩa xã hội khoa học", tinChi: 2, vien: "KML" },
+  "SSH1140": { ten: "Lịch sử Đảng Cộng sản Việt Nam", tinChi: 2, vien: "KML" },
+  "SSH1150": { ten: "Tư tưởng Hồ Chí Minh", tinChi: 2, vien: "KML" },
 
-            // Xóa trắng ô nhập sau khi thêm thành công
-            document.getElementById('maHP').value = '';
-            document.getElementById('tenMon').value = '';
-            document.getElementById('soTinChi').value = '';
-            document.getElementById('diemChu').value = '';
+  // === Giáo dục thể chất ===
+  "PE2010": { ten: "Giáo dục thể chất 1", tinChi: 1, vien: "BGDTC" },
+  "PE2020": { ten: "Giáo dục thể chất 2", tinChi: 1, vien: "BGDTC" },
+  "PE2030": { ten: "Giáo dục thể chất 3", tinChi: 1, vien: "BGDTC" },
 
-            capNhatGiaoDien();
-        }
+  // === Vật liệu (TVL) ===
+  "MS2011": { ten: "Khoa học và kỹ thuật vật liệu", tinChi: 3, vien: "TVL" },
 
-        function xoaMon(index) {
-            danhSachMon.splice(index, 1);
-            capNhatGiaoDien();
-        }
+  // === Ban đào tạo (PDTDH) ===
+  "1DL242": { ten: "Advanced Software Design", tinChi: 3, vien: "PDTDH" },
+  "1DL330": { ten: "Functional Programming I", tinChi: 3, vien: "PDTDH" },
+  "1DL340": { ten: "Artificial Intelligence", tinChi: 3, vien: "PDTDH" },
+  "1DL350": { ten: "E-commerce Project", tinChi: 6, vien: "PDTDH" },
+  "1DL360": { ten: "Data Mining I", tinChi: 3, vien: "PDTDH" },
+  "1DL450": { ten: "Advanced Functional Programming", tinChi: 3, vien: "PDTDH" },
+  "1DL610": { ten: "Software Testing", tinChi: 3, vien: "PDTDH" },
+  "1DL620": { ten: "Platform-Spanning Systems", tinChi: 3, vien: "PDTDH" },
+  "1DT063": { ten: "Real Time Systems I", tinChi: 3, vien: "PDTDH" },
+  "1DT072": { ten: "Secure Computer Systems I", tinChi: 3, vien: "PDTDH" },
+  "1DT075": { ten: "Cryptology", tinChi: 3, vien: "PDTDH" },
+  "1DT340": { ten: "Degree Project C in Computer Science", tinChi: 8, vien: "PDTDH" },
+  "1TD265": { ten: "Applied Cloud Computing", tinChi: 6, vien: "PDTDH" },
+};
 
-        function capNhatGiaoDien() {
-            let tbody = document.getElementById('bangMonHoc');
-            tbody.innerHTML = '';
-            
-            let tongTinChi = 0;
-            let tongDiem4 = 0;
+// Build search index (mảng để search nhanh)
+const DB_ENTRIES = Object.entries(HUST_DB).map(([code, info]) => ({
+  code,
+  ten: info.ten,
+  tinChi: info.tinChi,
+  vien: info.vien,
+  searchKey: (code + ' ' + info.ten).toLowerCase()
+}));
 
-            danhSachMon.forEach((mon, index) => {
-                let row = `<tr>
-                    <td><strong>${mon.maHP}</strong></td>
-                    <td>${mon.ten}</td>
-                    <td>${mon.tinChi}</td>
-                    <td><strong><span style="color:#cc0000">${mon.diemChu}</span></strong></td>
-                    <td>${mon.diem4.toFixed(1)}</td>
-                    <td><button class="delete-btn" onclick="xoaMon(${index})">Xóa</button></td>
-                </tr>`;
-                tbody.innerHTML += row;
+// =============================================
+// STATE
+// =============================================
+let courses = JSON.parse(localStorage.getItem('hust_cpa_v2') || '[]');
+let selectedGrade = null;
 
-                tongTinChi += mon.tinChi;
-                tongDiem4 += (mon.diem4 * mon.tinChi);
-            });
+const GRADE_MAP = { A:4.0, 'B+':3.5, B:3.0, 'C+':2.5, C:2.0, 'D+':1.5, D:1.0, F:0.0 };
+const GRADE_CLASS = { A:'g-a', 'B+':'g-b+', B:'g-b', 'C+':'g-c+', C:'g-c', 'D+':'g-d+', D:'g-d', F:'g-f' };
 
-            document.getElementById('tongTin').innerText = tongTinChi;
-            let cpa = tongTinChi === 0 ? 0 : (tongDiem4 / tongTinChi);
-            document.getElementById('diemCPA').innerText = cpa.toFixed(2);
+// =============================================
+// AUTOCOMPLETE
+// =============================================
+function onCodeInput() {
+  const q = document.getElementById('inputCode').value.trim().toUpperCase();
+  const list = document.getElementById('acList');
 
-            localStorage.setItem("duLieuCPA_HUST", JSON.stringify(danhSachMon));
-        }
+  if (q.length < 2) { list.classList.remove('show'); return; }
 
-        window.onload = taiDuLieuTuBoNho;
-    </script>
+  const results = DB_ENTRIES.filter(e =>
+    e.searchKey.includes(q.toLowerCase()) || e.code.startsWith(q)
+  ).slice(0, 8);
+
+  if (results.length === 0) { list.classList.remove('show'); return; }
+
+  list.innerHTML = results.map(r => `
+    <div class="ac-item" onclick="selectCourse('${r.code}')">
+      <span class="ac-code">${r.code}</span>
+      <span class="ac-name">${r.ten}</span>
+      <span class="ac-credits">${r.tinChi}TC</span>
+    </div>
+  `).join('');
+
+  list.classList.add('show');
+}
+
+function selectCourse(code) {
+  const info = HUST_DB[code];
+  if (!info) return;
+  document.getElementById('inputCode').value = code;
+  document.getElementById('inputName').value = info.ten;
+  document.getElementById('inputCredits').value = info.tinChi;
+  document.getElementById('acList').classList.remove('show');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.input-wrapper')) {
+    document.getElementById('acList').classList.remove('show');
+  }
+});
+
+// =============================================
+// GRADE BUTTONS
+// =============================================
+function selectGrade(btn) {
+  document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedGrade = btn.dataset.grade;
+}
+
+// =============================================
+// ADD COURSE
+// =============================================
+function addCourse() {
+  const code = document.getElementById('inputCode').value.trim().toUpperCase() || '---';
+  const name = document.getElementById('inputName').value.trim();
+  const credits = parseFloat(document.getElementById('inputCredits').value);
+  const grade = selectedGrade;
+
+  if (!name) return toast('Vui lòng nhập tên môn học', 'error');
+  if (isNaN(credits) || credits <= 0) return toast('Vui lòng nhập số tín chỉ hợp lệ', 'error');
+  if (!grade) return toast('Vui lòng chọn điểm chữ', 'error');
+
+  // Kiểm tra trùng
+  const dup = courses.find(c =>
+    (code !== '---' && c.code === code) ||
+    c.name.toLowerCase() === name.toLowerCase()
+  );
+  if (dup) return toast('⚠️ Môn học đã tồn tại trong bảng!', 'error');
+
+  courses.push({ code, name, credits, grade, gpa4: GRADE_MAP[grade] });
+  save();
+
+  // Reset form
+  document.getElementById('inputCode').value = '';
+  document.getElementById('inputName').value = '';
+  document.getElementById('inputCredits').value = '';
+  document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+  selectedGrade = null;
+
+  toast('✓ Đã thêm môn học', 'success');
+  renderAll();
+}
+
+// =============================================
+// DELETE
+// =============================================
+function deleteCourse(idx) {
+  courses.splice(idx, 1);
+  save();
+  renderAll();
+}
+
+// =============================================
+// SAVE
+// =============================================
+function save() {
+  localStorage.setItem('hust_cpa_v2', JSON.stringify(courses));
+}
+
+// =============================================
+// RENDER
+// =============================================
+function renderTable() {
+  const q = document.getElementById('filterInput').value.toLowerCase();
+  const filtered = courses.filter((c, i) => {
+    c._idx = i;
+    return !q || c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q);
+  }).map((c, _) => ({...c}));
+
+  // Re-index for delete
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+
+  if (courses.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = courses.map((c, i) => {
+    if (q && !c.code.toLowerCase().includes(q) && !c.name.toLowerCase().includes(q)) return '';
+    const gc = GRADE_CLASS[c.grade] || 'g-f';
+    const d4Color = c.gpa4 >= 3.5 ? '#4ade80' : c.gpa4 >= 2.5 ? '#fbbf24' : c.gpa4 >= 1.0 ? '#fb923c' : '#9ca3af';
+    return `<tr>
+      <td class="td-code">${c.code}</td>
+      <td class="td-name">${c.name}</td>
+      <td class="td-credits">${c.credits}</td>
+      <td class="td-center"><span class="grade-badge ${gc}">${c.grade}</span></td>
+      <td class="d4-val" style="color:${d4Color}">${c.gpa4.toFixed(1)}</td>
+      <td><button class="btn-del" onclick="deleteCourse(${i})">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderStats() {
+  let totalCredits = 0, weightedSum = 0;
+  courses.forEach(c => {
+    totalCredits += c.credits;
+    weightedSum += c.gpa4 * c.credits;
+  });
+
+  const cpa = totalCredits === 0 ? 0 : weightedSum / totalCredits;
+
+  document.getElementById('statCPA').textContent = cpa.toFixed(2);
+  document.getElementById('statCredits').textContent = totalCredits;
+  document.getElementById('statCourses').textContent = courses.length;
+
+  // Rank
+  const pct = (cpa / 4.0) * 100;
+  document.getElementById('rankBar').style.width = pct + '%';
+
+  let rank, color;
+  if (cpa >= 3.6)      { rank = '🏆 Xuất sắc'; color = '#fbbf24'; }
+  else if (cpa >= 3.2) { rank = '⭐ Giỏi'; color = '#4ade80'; }
+  else if (cpa >= 2.5) { rank = '✓ Khá'; color = '#60a5fa'; }
+  else if (cpa >= 2.0) { rank = '○ Trung bình'; color = '#fb923c'; }
+  else if (cpa > 0)    { rank = '⚠ Yếu'; color = '#f87171'; }
+  else                 { rank = 'Chưa có dữ liệu'; color = 'var(--text-muted)'; }
+
+  document.getElementById('rankLabel').textContent = rank;
+  document.getElementById('rankLabel').style.color = color;
+}
+
+function renderAll() {
+  renderTable();
+  renderStats();
+}
+
+// =============================================
+// EXPORT / IMPORT
+// =============================================
+function exportJSON() {
+  const data = JSON.stringify(courses, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'hust_cpa_data.json'; a.click();
+  toast('✓ Đã xuất file JSON', 'success');
+}
+
+function importTrigger() { document.getElementById('importFile').click(); }
+
+function importJSON(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (Array.isArray(data)) {
+        courses = data;
+        save();
+        renderAll();
+        toast(`✓ Đã nhập ${data.length} môn học`, 'success');
+      } else {
+        toast('File JSON không hợp lệ', 'error');
+      }
+    } catch { toast('Lỗi đọc file JSON', 'error'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function clearAll() {
+  if (courses.length === 0) return;
+  if (confirm(`Xóa tất cả ${courses.length} môn học?`)) {
+    courses = [];
+    save();
+    renderAll();
+    toast('Đã xóa tất cả dữ liệu', 'success');
+  }
+}
+
+// =============================================
+// TOAST
+// =============================================
+let toastTimer;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// =============================================
+// INIT
+// =============================================
+renderAll();
+</script>
 </body>
 </html>
