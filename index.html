@@ -257,6 +257,71 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
 ::-webkit-scrollbar-track { background:var(--surface); }
 ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:99px; }
 
+
+/* ── SUGGESTION PANEL ── */
+.suggest-panel {
+  margin-top: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.suggest-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.suggest-header-left { display:flex; align-items:center; gap:8px; }
+.suggest-header-left svg { color: #fbbf24; }
+.suggest-title { font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); }
+.suggest-tabs { display:flex; gap:6px; }
+.suggest-tab {
+  padding: 5px 14px; border-radius: 99px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--border2); background: var(--surface2);
+  color: var(--text-muted); transition: all 0.15s; white-space: nowrap;
+}
+.suggest-tab.active-gioi   { background:rgba(74,222,128,0.12); border-color:rgba(74,222,128,0.4); color:#4ade80; }
+.suggest-tab.active-xuatsac{ background:rgba(251,191,36,0.12); border-color:rgba(251,191,36,0.4); color:#fbbf24; }
+.suggest-body { padding: 20px; }
+.suggest-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+.sum-card { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px 12px; text-align:center; }
+.sum-label { font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+.sum-val { font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:500; }
+.progress-wrap { margin-bottom:18px; }
+.progress-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.progress-label span { font-size:12px; color:var(--text-muted); }
+.progress-label strong { font-size:13px; font-weight:700; }
+.progress-track { height:8px; border-radius:4px; background:var(--border); overflow:hidden; }
+.progress-fill { height:100%; border-radius:4px; transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+.progress-fill.gioi    { background:linear-gradient(90deg,#16a34a,#4ade80); }
+.progress-fill.xuatsac { background:linear-gradient(90deg,#b45309,#fbbf24); }
+.suggest-list { display:flex; flex-direction:column; gap:8px; }
+.suggest-item {
+  background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:12px 14px;
+  display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; transition:border-color 0.15s;
+}
+.suggest-item:hover { border-color:var(--border2); }
+.si-name { font-size:13px; color:var(--text); margin-bottom:4px; font-weight:500; }
+.si-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.si-code { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-muted); }
+.si-credits { font-size:11px; color:var(--text-muted); background:var(--border); padding:1px 6px; border-radius:4px; }
+.si-arrow { font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:4px; }
+.si-right { text-align:right; }
+.si-gain { font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:700; color:#4ade80; white-space:nowrap; }
+.si-gain.gold { color:#fbbf24; }
+.si-new-grade { font-size:11px; color:var(--text-muted); margin-top:3px; }
+.suggest-empty { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; }
+.suggest-empty .ei { font-size:32px; margin-bottom:10px; opacity:0.5; }
+.suggest-note { margin-top:14px; padding:10px 14px; background:rgba(255,255,255,0.02); border-radius:6px; border-left:2px solid var(--border2); font-size:11px; color:var(--text-muted); line-height:1.6; }
+@media (max-width:600px) {
+  .suggest-summary { grid-template-columns:1fr 1fr; }
+  .suggest-summary .sum-card:last-child { grid-column:1/-1; }
+  .suggest-tabs { gap:4px; }
+  .suggest-tab { padding:4px 10px; font-size:11px; }
+  .suggest-body { padding:14px 12px; }
+  .suggest-header { padding:12px 14px; }
+}
+
 /* ════════════════════════════════════════════
    RESPONSIVE ≤ 900px (tablet → 1 cột)
 ════════════════════════════════════════════ */
@@ -445,8 +510,53 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
   </div>
 </div>
 
+  <!-- SUGGEST PANEL -->
+  <div class="suggest-panel" id="suggestPanel" style="display:none">
+    <div class="suggest-header">
+      <div class="suggest-header-left">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+        <span class="suggest-title">Gợi ý cải thiện</span>
+      </div>
+      <div class="suggest-tabs">
+        <button class="suggest-tab active-gioi" id="tabGioi" onclick="switchTarget('gioi')">⭐ Giỏi (3.20)</button>
+        <button class="suggest-tab" id="tabXuatsac" onclick="switchTarget('xuatsac')">🏆 Xuất sắc (3.60)</button>
+      </div>
+    </div>
+    <div class="suggest-body">
+      <div class="suggest-summary">
+        <div class="sum-card">
+          <div class="sum-label">CPA hiện tại</div>
+          <div class="sum-val" id="sumCurrent" style="color:var(--red-light)">0.00</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-label">Mục tiêu</div>
+          <div class="sum-val" id="sumTarget">3.20</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-label">Còn thiếu</div>
+          <div class="sum-val" id="sumGap" style="color:#fb923c">0.00</div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Tiến độ đến mục tiêu</span>
+          <strong id="progressPct" style="color:#4ade80">0%</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill gioi" id="progressFill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="suggest-list" id="suggestList"></div>
+      <div class="suggest-note">
+        💡 Xếp hạng theo <strong>mức tăng CPA / tín chỉ</strong> — môn đứng đầu là lựa chọn hiệu quả nhất. Giả sử bạn học lại và đạt <strong>A (4.0)</strong>.
+      </div>
+    </div>
+  </div>
+
 <footer style="text-align:center;padding:24px 16px 40px;color:var(--text-muted);font-size:13px;position:relative;z-index:1;">
-  Được tạo bởi <a href="https://www.facebook.com/vanthe06" target="_blank" rel="noopener" style="color:var(--red-light);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(232,41,58,0.3);padding-bottom:1px;transition:color 0.15s;">Nguyễn Văn Thế</a>
+   Được tạo bởi <a href="https://www.facebook.com/vanthe06" target="_blank" rel="noopener" style="color:var(--red-light);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(232,41,58,0.3);padding-bottom:1px;transition:color 0.15s;">Nguyễn Văn Thế</a>
 </footer>
 
 <div class="toast" id="toast"></div>
@@ -566,7 +676,7 @@ function renderStats() {
   document.getElementById('rankLabel').textContent=rank;
   document.getElementById('rankLabel').style.color=color;
 }
-function renderAll(){ renderTable(); renderStats(); }
+function renderAll(){ renderTable(); renderStats(); renderSuggest(); }
 
 function exportJSON() {
   const a=document.createElement('a');
@@ -599,6 +709,104 @@ function toast(msg,type='') {
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
 }
+
+renderAll();
+
+// ── SUGGESTION ENGINE ──
+let suggestTarget = 'gioi'; // 'gioi' = 3.20, 'xuatsac' = 3.60
+const TARGETS = { gioi: 3.20, xuatsac: 3.60 };
+const TARGET_LABELS = { gioi: '3.20', xuatsac: '3.60' };
+
+function switchTarget(t) {
+  suggestTarget = t;
+  document.getElementById('tabGioi').className    = 'suggest-tab' + (t==='gioi'    ? ' active-gioi'    : '');
+  document.getElementById('tabXuatsac').className = 'suggest-tab' + (t==='xuatsac' ? ' active-xuatsac' : '');
+  document.getElementById('progressFill').className = 'progress-fill ' + t;
+  renderSuggest();
+}
+
+function renderSuggest() {
+  const panel = document.getElementById('suggestPanel');
+  if (!courses.length) { panel.style.display='none'; return; }
+  panel.style.display = 'block';
+
+  const target = TARGETS[suggestTarget];
+
+  // Current CPA
+  let tc=0, ws=0;
+  courses.forEach(c=>{ tc+=c.credits; ws+=c.gpa4*c.credits; });
+  const cpa = tc===0 ? 0 : ws/tc;
+
+  // Update summary
+  document.getElementById('sumCurrent').textContent = cpa.toFixed(2);
+  document.getElementById('sumTarget').textContent  = TARGET_LABELS[suggestTarget];
+  const gap = Math.max(0, target - cpa);
+  const sumGap = document.getElementById('sumGap');
+  sumGap.textContent = gap.toFixed(2);
+  sumGap.style.color = gap===0 ? '#4ade80' : '#fb923c';
+
+  // Progress
+  const pct = Math.min(100, Math.round((cpa / target) * 100));
+  document.getElementById('progressFill').style.width = pct + '%';
+  const pctEl = document.getElementById('progressPct');
+  pctEl.textContent = pct + '%';
+  pctEl.style.color = pct>=100 ? '#4ade80' : suggestTarget==='xuatsac' ? '#fbbf24' : '#4ade80';
+
+  const list = document.getElementById('suggestList');
+
+  // Already reached target
+  if (cpa >= target) {
+    list.innerHTML = `<div class="suggest-empty"><div class="ei">${suggestTarget==='xuatsac'?'🏆':'⭐'}</div><p>Chúc mừng! Bạn đã đạt <strong>${suggestTarget==='xuatsac'?'Xuất sắc':'Giỏi'}</strong> rồi!</p></div>`;
+    return;
+  }
+
+  // For each course not already A, simulate replacing with A and measure gain
+  const candidates = courses
+    .map((c, i) => {
+      if (c.gpa4 === 4.0) return null; // Already A, can't improve
+      const newWs = ws - c.gpa4 * c.credits + 4.0 * c.credits;
+      const newCpa = newWs / tc;
+      const gain = newCpa - cpa; // CPA gain from this improvement
+      const gainPerCredit = gain / c.credits; // efficiency
+      return { ...c, i, newCpa, gain, gainPerCredit };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.gainPerCredit - a.gainPerCredit) // Most efficient first
+    .slice(0, 8); // Top 8
+
+  if (!candidates.length) {
+    list.innerHTML = `<div class="suggest-empty"><div class="ei">📚</div><p>Tất cả môn đều đã đạt A.</p></div>`;
+    return;
+  }
+
+  const isGold = suggestTarget === 'xuatsac';
+
+  list.innerHTML = candidates.map((c, rank) => {
+    const gainStr = '+' + c.gain.toFixed(3);
+    const newCpaStr = c.newCpa.toFixed(2);
+    const reachTarget = c.newCpa >= target;
+    return `
+    <div class="suggest-item">
+      <div class="si-left">
+        <div class="si-name">${rank+1}. ${c.name}</div>
+        <div class="si-meta">
+          <span class="si-code">${c.code}</span>
+          <span class="si-credits">${c.credits} TC</span>
+          <span class="si-arrow">
+            <span class="grade-badge ${GRADE_CLASS[c.grade]||'g-f'}" style="font-size:10px;padding:1px 7px">${c.grade}</span>
+            → A
+          </span>
+          ${reachTarget ? `<span style="font-size:10px;padding:1px 8px;border-radius:99px;background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.3);font-weight:600;">Đạt mục tiêu!</span>` : ''}
+        </div>
+      </div>
+      <div class="si-right">
+        <div class="si-gain${isGold?' gold':''}">${gainStr}</div>
+        <div class="si-new-grade">CPA → ${newCpaStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 
 renderAll();
 </script>
