@@ -616,70 +616,71 @@
        MOBILE OPTIMIZATION (ĐIỆN THOẠI)
        ========================================= */
     @media (max-width: 768px) {
-      /* 1. Tối ưu không gian viền */
-      header { padding: 32px 16px 24px; }
-      .container { padding: 16px 12px 80px; }
-      
-      /* 2. Form & Nút bấm thân thiện với ngón tay (Touch-friendly) */
-      input[type="text"], input[type="number"], select {
-        padding: 14px 16px; /* To hơn để dễ chạm */
-        font-size: 16px; /* Chống lỗi tự zoom của Safari trên iPhone */
-      }
-      
-      .grade-btn {
-        padding: 14px 4px; /* Nút chọn điểm to ra */
-        font-size: 14px;
-      }
-      
-      .btn-add { padding: 16px; font-size: 15px; }
+    /* Tối ưu không gian viền */
+    header { padding: 32px 16px 24px; }
+    .container { padding: 16px 12px 80px; }
     
-      /* 3. Bảng điểm hiển thị mượt hơn trên màn nhỏ */
-      td, th { 
-        padding: 12px 10px; 
-        font-size: 12px; 
-      }
-      .td-name { 
-        max-width: 160px; /* Cắt gọn tên môn nếu quá dài */
-        white-space: normal; 
-      }
-      
-      .btn-del {
-        padding: 8px 12px; /* Nút xóa to hơn để không bấm nhầm */
-        font-size: 14px;
-      }
-    
-      /* 4. Hàng nút Action (Nhập/Xuất/Xóa) xếp gọn lại */
-      .action-row {
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      .btn-sec {
-        flex: 1 1 calc(50% - 5px); /* Chia 2 cột trên mobile */
-        padding: 12px;
-      }
-      .btn-sec:last-child {
-        flex: 1 1 100%; /* Nút Xóa chiếm trọn 1 dòng dưới cùng */
-      }
-      
-      /* 5. Thông báo Toast nằm giữa màn hình thay vì góc phải */
-      .toast {
-        left: 16px; right: 16px; bottom: 20px;
-        text-align: center;
-        transform: translateY(100px);
-      }
+    /* Form & Nút bấm thân thiện với ngón tay */
+    input[type="text"], input[type="number"], select {
+      padding: 14px 16px;
+      font-size: 16px; /* Chống lỗi tự zoom của Safari trên iPhone */
     }
     
-    /* Tối ưu riêng cho các máy siêu nhỏ (iPhone SE, Galaxy Fold lúc gập) */
-    @media (max-width: 480px) {
-      h1 { font-size: 28px; }
-      
-      /* Card thông số xếp thành 1 cột dọc */
-      .stats-row { grid-template-columns: 1fr; gap: 10px; }
-      .stats-row .stat-card:last-child { grid-column: span 1; }
-      
-      .stat-card { padding: 16px; }
-      .stat-value { font-size: 28px; }
+    .grade-btn {
+      padding: 14px 4px;
+      font-size: 14px;
     }
+    
+    .btn-add { padding: 16px; font-size: 15px; }
+  
+    /* Bảng điểm hiển thị mượt hơn trên màn nhỏ */
+    td, th { 
+      padding: 12px 10px; 
+      font-size: 12px; 
+    }
+    .td-name { 
+      max-width: 160px;
+      white-space: normal; 
+    }
+    
+    .btn-del {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+  
+    /* Hàng nút Action (Nhập/Xuất/Xóa) xếp gọn lại */
+    .action-row {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn-sec {
+      flex: 1 1 calc(50% - 5px);
+      padding: 12px;
+    }
+    .btn-sec:last-child {
+      flex: 1 1 100%;
+    }
+    
+    /* Thông báo Toast */
+    .toast {
+      left: 16px; right: 16px; bottom: 20px;
+      text-align: center;
+      transform: translateY(100px);
+    }
+  }
+  
+  /* =========================================
+     3. TỐI ƯU MÀN HÌNH SIÊU NHỎ (iPhone SE)
+     ========================================= */
+  @media (max-width: 480px) {
+    h1 { font-size: 28px; }
+    
+    .stats-row { grid-template-columns: 1fr; gap: 10px; }
+    .stats-row .stat-card:last-child { grid-column: span 1; }
+    
+    .stat-card { padding: 16px; }
+    .stat-value { font-size: 28px; }
+  }
 </style>
 </head>
 <body>
