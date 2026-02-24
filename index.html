@@ -189,6 +189,76 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
 .btn-cancel{padding:12px 18px;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all 0.15s;}
 .btn-cancel:hover{background:var(--surface3);color:var(--text);}
 
+
+/* ── CHECKBOX ── */
+.cb-th { width:40px; text-align:center; padding:0 !important; }
+.cb-td { width:40px; text-align:center; padding:0 8px !important; vertical-align:middle; }
+.custom-cb {
+  appearance:none; -webkit-appearance:none;
+  width:15px; height:15px; border:1.5px solid var(--border2);
+  border-radius:3px; background:var(--surface2); cursor:pointer;
+  transition:all 0.12s; vertical-align:middle; position:relative; display:inline-block;
+}
+.custom-cb:hover { border-color:rgba(196,18,48,0.5); }
+.custom-cb:checked { background:var(--red); border-color:var(--red); }
+.custom-cb:checked::after {
+  content:''; position:absolute; left:4px; top:1px;
+  width:4px; height:8px; border:1.5px solid #fff;
+  border-top:none; border-left:none; transform:rotate(40deg);
+}
+.custom-cb.indeterminate { background:rgba(196,18,48,0.25); border-color:var(--red); }
+.custom-cb.indeterminate::after {
+  content:''; position:absolute; left:2px; top:5px;
+  width:9px; height:1.5px; background:var(--red);
+}
+tr.row-sel { background:rgba(196,18,48,0.04) !important; }
+tr.row-sel:hover { background:rgba(196,18,48,0.07) !important; }
+
+/* ── SEM RESULT PANEL (trong bảng, hiện khi có chọn) ── */
+.sem-result {
+  margin:0; padding:14px 20px;
+  background:linear-gradient(135deg,rgba(96,165,250,0.06),rgba(96,165,250,0.02));
+  border-top:1px solid rgba(96,165,250,0.2);
+  display:none; align-items:center; gap:0; flex-wrap:wrap;
+}
+.sem-result.show { display:flex; }
+.sem-result-title {
+  font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  color:#60a5fa; display:flex; align-items:center; gap:6px; margin-right:20px; white-space:nowrap;
+}
+.sem-stats { display:flex; gap:0; flex:1; flex-wrap:wrap; }
+.sem-stat-item {
+  display:flex; flex-direction:column; align-items:center;
+  padding:4px 16px; border-right:1px solid var(--border);
+}
+.sem-stat-item:first-child { padding-left:0; }
+.sem-stat-item:last-child { border-right:none; }
+.sem-stat-lbl { font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; }
+.sem-stat-num { font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:600; line-height:1; }
+.sem-rank-badge {
+  display:inline-flex; align-items:center; padding:3px 10px; border-radius:99px;
+  font-size:11px; font-weight:700; letter-spacing:0.04em; margin-left:8px;
+}
+.sem-actions { margin-left:auto; display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.btn-sem-deselect {
+  padding:6px 12px; background:none; border:1px solid var(--border2);
+  border-radius:6px; font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:600;
+  color:var(--text-muted); cursor:pointer; transition:all 0.15s; white-space:nowrap;
+}
+.btn-sem-deselect:hover { border-color:rgba(96,165,250,0.4); color:#60a5fa; }
+.sem-count-badge {
+  font-size:11px; color:var(--text-muted); white-space:nowrap;
+}
+
+@media(max-width:600px){
+  .sem-result { gap:10px; padding:12px 14px; }
+  .sem-result-title { margin-right:0; width:100%; }
+  .sem-stats { width:100%; }
+  .sem-stat-item { padding:4px 12px; }
+  .sem-stat-num { font-size:17px; }
+  .sem-actions { margin-left:0; }
+}
+
 /* SUGGEST PANEL */
 .suggest-panel{margin-top:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .suggest-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
@@ -227,6 +297,86 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
 .suggest-empty{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:14px;}
 .suggest-empty .ei{font-size:32px;margin-bottom:10px;opacity:0.5;}
 .suggest-note{margin-top:14px;padding:10px 14px;background:rgba(255,255,255,0.02);border-radius:6px;border-left:2px solid var(--border2);font-size:11px;color:var(--text-muted);line-height:1.6;}
+
+
+/* ── CHECKBOX ── */
+.cb-th { width:40px; text-align:center; padding:0 8px !important; }
+.cb-td { width:40px; text-align:center; padding:0 8px !important; vertical-align:middle; }
+input[type="checkbox"].hcb {
+  appearance:none; -webkit-appearance:none;
+  width:15px; height:15px; min-width:15px;
+  border:1.5px solid var(--border2); border-radius:4px;
+  background:var(--surface2); cursor:pointer; position:relative;
+  transition:all 0.15s; display:inline-block; vertical-align:middle;
+}
+input[type="checkbox"].hcb:hover { border-color:var(--red-light); }
+input[type="checkbox"].hcb:checked { background:var(--red); border-color:var(--red); }
+input[type="checkbox"].hcb:checked::after {
+  content:''; position:absolute; left:4px; top:1px;
+  width:4px; height:8px; border:2px solid white;
+  border-top:none; border-left:none; transform:rotate(40deg);
+}
+input[type="checkbox"]#cbAll:indeterminate { background:rgba(196,18,48,0.35); border-color:var(--red); }
+input[type="checkbox"]#cbAll:indeterminate::after {
+  content:''; position:absolute; left:2px; top:5px;
+  width:9px; height:2px; background:white;
+}
+tbody tr.row-sel { background:rgba(196,18,48,0.04) !important; }
+tbody tr.row-sel:hover { background:rgba(196,18,48,0.07) !important; }
+
+/* ── SEMESTER GPA PANEL ── */
+.sem-panel {
+  border-top: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(96,165,250,0.04), var(--surface));
+  padding: 16px 20px;
+  display: none;
+}
+.sem-panel.show { display: block; }
+.sem-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+}
+.sem-panel-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #60a5fa;
+  display: flex; align-items: center; gap: 6px;
+}
+.sem-panel-title::before {
+  content: ''; width: 6px; height: 6px;
+  background: #60a5fa; border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+.btn-sem-clear {
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  background: none; border: 1px solid var(--border2); border-radius: 6px;
+  padding: 4px 10px; cursor: pointer; transition: all 0.15s;
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.btn-sem-clear:hover { border-color: var(--red-light); color: var(--text); }
+.sem-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.sem-stat {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 10px; text-align: center;
+}
+.sem-stat-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;
+}
+.sem-stat-val {
+  font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600;
+}
+.sem-rank {
+  margin-top: 8px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+@media (max-width:600px) {
+  .sem-stats { grid-template-columns: 1fr 1fr; }
+  .sem-stats .sem-stat:last-child { grid-column: 1/-1; }
+  .sem-panel { padding: 14px 14px; }
+}
 
 /* RESPONSIVE */
 @media(max-width:900px){.main-grid{grid-template-columns:1fr;}}
@@ -362,6 +512,7 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
           <table>
             <thead>
               <tr>
+                <th class="cb-th"><input type="checkbox" class="custom-cb" id="cbAll" title="Chọn tất cả" onclick="toggleAll(this)"></th>
                 <th>Mã HP</th>
                 <th>Tên môn học</th>
                 <th class="center">TC</th>
@@ -377,11 +528,67 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
             <p>Chưa có học phần nào.<br>Thêm môn học từ panel bên trái.</p>
           </div>
         </div>
+        <!-- SEM RESULT -->
+        <div class="sem-result" id="semResult">
+          <div class="sem-result-title">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Kì đã chọn
+          </div>
+          <div class="sem-stats">
+            <div class="sem-stat-item">
+              <div class="sem-stat-lbl">GPA kì</div>
+              <div class="sem-stat-num" id="semGPA" style="color:#60a5fa">—</div>
+            </div>
+            <div class="sem-stat-item">
+              <div class="sem-stat-lbl">Tín chỉ</div>
+              <div class="sem-stat-num" id="semTC" style="color:var(--text-dim)">—</div>
+            </div>
+            <div class="sem-stat-item">
+              <div class="sem-stat-lbl">Môn học</div>
+              <div class="sem-stat-num" id="semMon" style="color:var(--text-dim)">—</div>
+            </div>
+            <div class="sem-stat-item">
+              <div class="sem-stat-lbl">Xếp loại</div>
+              <div class="sem-stat-num" id="semRank" style="font-size:13px">—</div>
+            </div>
+          </div>
+          <div class="sem-actions">
+            <span class="sem-count-badge" id="semCountBadge"></span>
+            <button class="btn-sem-deselect" onclick="clearSel()">✕ Bỏ chọn</button>
+          </div>
+        </div>
+
         <div class="action-row">
           <button class="btn-sec" onclick="exportJSON()">↓ Xuất JSON</button>
           <button class="btn-sec" onclick="importTrigger()">↑ Nhập JSON</button>
           <button class="btn-sec" onclick="clearAll()" style="color:#f87171">✕ Xóa tất cả</button>
         </div>
+
+        <!-- SEM GPA PANEL -->
+        <div class="sem-panel" id="semPanel">
+          <div class="sem-panel-header">
+            <span class="sem-panel-title">GPA kì đã chọn</span>
+            <button class="btn-sem-clear" onclick="clearSel()">Bỏ chọn tất cả</button>
+          </div>
+          <div class="sem-stats">
+            <div class="sem-stat">
+              <div class="sem-stat-label">GPA kì</div>
+              <div class="sem-stat-val" id="semGPA" style="color:#60a5fa">0.00</div>
+              <div class="sem-rank" id="semRank" style="color:var(--text-muted)">–</div>
+            </div>
+            <div class="sem-stat">
+              <div class="sem-stat-label">Tín chỉ</div>
+              <div class="sem-stat-val" id="semCr" style="color:var(--text-dim)">0</div>
+              <div style="margin-top:4px;font-size:10px;color:var(--text-muted)">tín chỉ</div>
+            </div>
+            <div class="sem-stat">
+              <div class="sem-stat-label">Số môn</div>
+              <div class="sem-stat-val" id="semN" style="color:var(--text-dim)">0</div>
+              <div style="margin-top:4px;font-size:10px;color:var(--text-muted)">học phần</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -487,7 +694,7 @@ async function loadCoursesData() {
 loadCoursesData();
 
 // ── STATE ──
-let courses = JSON.parse(localStorage.getItem('hust_cpa_v2') || '[]');
+let courses = JSON.parse(localStorage.getItem('hust_cpa_v2') || '[]').map(c=>({...c, sel:false}));
 let selectedGrade = null;
 
 const GRADE_MAP = {
@@ -565,7 +772,7 @@ function addCourse() {
 
 // ── DELETE / SAVE ──
 function deleteCourse(i) { courses.splice(i,1); save(); renderAll(); }
-function save() { localStorage.setItem('hust_cpa_v2', JSON.stringify(courses)); }
+function save() { localStorage.setItem('hust_cpa_v2', JSON.stringify(courses.map(({sel,...r})=>r))); }
 
 // ── RENDER TABLE ──
 function renderTable() {
@@ -578,7 +785,8 @@ function renderTable() {
     if (q && !c.code.toLowerCase().includes(q) && !c.name.toLowerCase().includes(q)) return '';
     const gc  = GRADE_CLASS[c.grade] || 'g-f';
     const col = c.gpa4>=3.5?'#4ade80':c.gpa4>=2.5?'#fbbf24':c.gpa4>=1.0?'#fb923c':'#9ca3af';
-    return `<tr>
+    return `<tr class="${c.sel?'row-sel':''}">
+      <td class="cb-td"><input type="checkbox" class="custom-cb" ${c.sel?'checked':''} onclick="toggleRow(${i},this)"></td>
       <td class="td-code">${c.code}</td>
       <td class="td-name">${c.name}</td>
       <td class="td-credits">${c.credits}</td>
@@ -612,7 +820,7 @@ function renderStats() {
   document.getElementById('rankLabel').style.color  = color;
 }
 
-function renderAll() { renderTable(); renderStats(); renderSuggest(); }
+function renderAll() { renderTable(); renderStats(); renderSuggest(); syncCbAll(); renderSemPanel(); }
 
 // ── EXPORT / IMPORT ──
 function exportJSON() {
@@ -823,8 +1031,138 @@ function renderSuggest() {
   list.innerHTML = html;
 }
 
+
+
+// ── SELECTION / SEMESTER ──
+function toggleRow(i, cb) {
+  courses[i].sel = cb.checked;
+  cb.closest('tr').classList.toggle('row-sel', cb.checked);
+  syncCbAll();
+  renderSem();
+}
+
+function toggleAll(cb) {
+  const q = document.getElementById('filterInput').value.toLowerCase();
+  courses.forEach(c => {
+    const vis = !q || c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q);
+    if (vis) c.sel = cb.checked;
+  });
+  renderTable();
+  renderSem();
+}
+
+function clearSel() {
+  courses.forEach(c => c.sel = false);
+  renderTable();
+  renderSem();
+}
+
+function syncCbAll() {
+  const cbAll = document.getElementById('cbAll');
+  if (!cbAll) return;
+  const q = document.getElementById('filterInput').value.toLowerCase();
+  const vis = courses.filter(c => !q || c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q));
+  const n = vis.filter(c => c.sel).length;
+  if (n === 0)           { cbAll.checked = false; cbAll.classList.remove('indeterminate'); }
+  else if (n === vis.length) { cbAll.checked = true;  cbAll.classList.remove('indeterminate'); }
+  else                   { cbAll.checked = false; cbAll.classList.add('indeterminate'); }
+}
+
+function renderSem() {
+  const sel = courses.filter(c => c.sel);
+  const panel = document.getElementById('semResult');
+  if (!sel.length) { panel.classList.remove('show'); return; }
+  panel.classList.add('show');
+
+  let tc = 0, ws = 0;
+  sel.forEach(c => { tc += c.credits; ws += c.gpa4 * c.credits; });
+  const gpa = tc ? ws / tc : 0;
+
+  // GPA color
+  const gpaEl = document.getElementById('semGPA');
+  gpaEl.textContent = gpa.toFixed(2);
+  gpaEl.style.color = gpa>=3.6?'#fbbf24':gpa>=3.2?'#4ade80':gpa>=2.5?'#60a5fa':gpa>=2.0?'#fb923c':'#f87171';
+
+  // Xếp loại
+  let rank, rankColor;
+  if      (gpa>=3.6) { rank='🏆 Xuất sắc'; rankColor='#fbbf24'; }
+  else if (gpa>=3.2) { rank='⭐ Giỏi';     rankColor='#4ade80'; }
+  else if (gpa>=2.5) { rank='✓ Khá';       rankColor='#60a5fa'; }
+  else if (gpa>=2.0) { rank='○ TB';         rankColor='#fb923c'; }
+  else               { rank='⚠ Yếu';       rankColor='#f87171'; }
+  const rankEl = document.getElementById('semRank');
+  rankEl.textContent = rank; rankEl.style.color = rankColor;
+
+  document.getElementById('semTC').textContent  = tc;
+  document.getElementById('semMon').textContent = sel.length;
+  document.getElementById('semCountBadge').textContent = sel.length + ' môn đã chọn';
+
+  syncCbAll();
+}
+
+
+// ── SELECTION ──
+function toggleSel(i, cb) {
+  courses[i].sel = cb.checked;
+  cb.closest('tr').classList.toggle('row-sel', cb.checked);
+  syncCbAll();
+  renderSemPanel();
+}
+
+function toggleAll(cb) {
+  const q = document.getElementById('filterInput').value.toLowerCase();
+  courses.forEach(c => {
+    const vis = !q || c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q);
+    if (vis) c.sel = cb.checked;
+  });
+  renderTable();
+  renderSemPanel();
+}
+
+function clearSel() {
+  courses.forEach(c => c.sel = false);
+  renderTable();
+  renderSemPanel();
+}
+
+function syncCbAll() {
+  const cb = document.getElementById('cbAll');
+  if (!cb) return;
+  const q = document.getElementById('filterInput').value.toLowerCase();
+  const vis = courses.filter(c => !q || c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q));
+  const n = vis.filter(c => c.sel).length;
+  cb.checked       = n > 0 && n === vis.length;
+  cb.indeterminate = n > 0 && n < vis.length;
+}
+
+function renderSemPanel() {
+  const sel = courses.filter(c => c.sel);
+  const panel = document.getElementById('semPanel');
+  if (!sel.length) { panel.classList.remove('show'); return; }
+  panel.classList.add('show');
+
+  let tc = 0, ws = 0;
+  sel.forEach(c => { tc += c.credits; ws += c.gpa4 * c.credits; });
+  const gpa = tc ? ws / tc : 0;
+
+  const gpaEl = document.getElementById('semGPA');
+  gpaEl.textContent = gpa.toFixed(2);
+  gpaEl.style.color = gpa>=3.6?'#fbbf24':gpa>=3.2?'#4ade80':gpa>=2.5?'#60a5fa':gpa>=2.0?'#fb923c':'#f87171';
+
+  const rankEl = document.getElementById('semRank');
+  if      (gpa>=3.6) { rankEl.textContent='🏆 Xuất sắc'; rankEl.style.color='#fbbf24'; }
+  else if (gpa>=3.2) { rankEl.textContent='⭐ Giỏi';     rankEl.style.color='#4ade80'; }
+  else if (gpa>=2.5) { rankEl.textContent='✓ Khá';       rankEl.style.color='#60a5fa'; }
+  else if (gpa>=2.0) { rankEl.textContent='○ TB';        rankEl.style.color='#fb923c'; }
+  else               { rankEl.textContent='⚠ Yếu';      rankEl.style.color='#f87171'; }
+
+  document.getElementById('semCr').textContent = tc;
+  document.getElementById('semN').textContent  = sel.length;
+}
+
 // ── INIT ──
 renderAll();
 </script>
+
 </body>
 </html>
