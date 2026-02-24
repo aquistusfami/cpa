@@ -612,74 +612,62 @@
     border-radius: 6px;
     border-left: 2px solid var(--border2);
   }
-      /* =========================================
-       MOBILE OPTIMIZATION (ĐIỆN THOẠI)
-       ========================================= */
-    @media (max-width: 768px) {
-    /* Tối ưu không gian viền */
-    header { padding: 32px 16px 24px; }
-    .container { padding: 16px 12px 80px; }
+     /* =========================================
+     FIX LỖI KHOẢNG ĐEN (TRÀN VIỀN TỰ ĐỘNG ZOOM iOS)
+     ========================================= */
+  html, body {
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .container {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  /* =========================================
+     MOBILE OPTIMIZATION (ĐIỆN THOẠI)
+     ========================================= */
+  @media (max-width: 768px) {
+    /* DÒNG LỆNH SINH TỬ: Ép lưới thành 1 cột để không bị lồi ra 412px */
+    .main-grid { grid-template-columns: 1fr !important; }
     
-    /* Form & Nút bấm thân thiện với ngón tay */
+    .stats-row { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+    .stats-row .stat-card:last-child { grid-column: span 2 !important; }
+
+    header { padding: 32px 16px 24px !important; }
+    /* Ép lề 2 bên bằng nhau chằn chặn 16px */
+    .container { padding: 16px 16px 80px 16px !important; }
+    
     input[type="text"], input[type="number"], select {
-      padding: 14px 16px;
-      font-size: 16px; /* Chống lỗi tự zoom của Safari trên iPhone */
+      padding: 14px 16px !important;
+      font-size: 16px !important; 
     }
     
-    .grade-btn {
-      padding: 14px 4px;
-      font-size: 14px;
-    }
-    
-    .btn-add { padding: 16px; font-size: 15px; }
+    .grade-btn { padding: 14px 4px !important; font-size: 14px !important; }
+    .btn-add { padding: 16px !important; font-size: 15px !important; }
   
-    /* Bảng điểm hiển thị mượt hơn trên màn nhỏ */
-    td, th { 
-      padding: 12px 10px; 
-      font-size: 12px; 
-    }
-    .td-name { 
-      max-width: 160px;
-      white-space: normal; 
-    }
-    
-    .btn-del {
-      padding: 8px 12px;
-      font-size: 14px;
-    }
+    td, th { padding: 12px 10px !important; font-size: 12px !important; }
+    .td-name { max-width: 160px !important; white-space: normal !important; }
+    .btn-del { padding: 8px 12px !important; font-size: 14px !important; }
   
-    /* Hàng nút Action (Nhập/Xuất/Xóa) xếp gọn lại */
-    .action-row {
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .btn-sec {
-      flex: 1 1 calc(50% - 5px);
-      padding: 12px;
-    }
-    .btn-sec:last-child {
-      flex: 1 1 100%;
-    }
+    .action-row { flex-wrap: wrap !important; gap: 10px !important; }
+    .btn-sec { flex: 1 1 calc(50% - 5px) !important; padding: 12px !important; }
+    .btn-sec:last-child { flex: 1 1 100% !important; }
     
-    /* Thông báo Toast */
-    .toast {
-      left: 16px; right: 16px; bottom: 20px;
-      text-align: center;
-      transform: translateY(100px);
-    }
+    .toast { left: 16px !important; right: 16px !important; bottom: 20px !important; text-align: center !important; }
   }
   
   /* =========================================
-     3. TỐI ƯU MÀN HÌNH SIÊU NHỎ (iPhone SE)
+     TỐI ƯU MÀN HÌNH SIÊU NHỎ (iPhone SE, 15 Pro)
      ========================================= */
   @media (max-width: 480px) {
-    h1 { font-size: 28px; }
-    
-    .stats-row { grid-template-columns: 1fr; gap: 10px; }
-    .stats-row .stat-card:last-child { grid-column: span 1; }
-    
-    .stat-card { padding: 16px; }
-    .stat-value { font-size: 28px; }
+    h1 { font-size: 28px !important; }
+    .stats-row { grid-template-columns: 1fr !important; gap: 10px !important; }
+    .stats-row .stat-card:last-child { grid-column: span 1 !important; }
+    .stat-card { padding: 16px !important; }
+    .stat-value { font-size: 28px !important; }
   }
 </style>
 </head>
