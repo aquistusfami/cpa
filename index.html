@@ -16,17 +16,10 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── BASE ── */
-html, body {
-  width: 100%;
-  /* overflow-x:hidden chỉ trên body để chặn scroll ngang toàn trang */
-  overflow-x: hidden;
-}
+html, body { width: 100%; overflow-x: hidden; }
 body {
   font-family: 'Space Grotesk', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+  background: var(--bg); color: var(--text); min-height: 100vh;
 }
 body::before {
   content:''; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.6;
@@ -35,13 +28,13 @@ body::before {
 
 /* ── HEADER ── */
 header {
-  position: relative; padding: 48px 24px 36px;
-  text-align: center; border-bottom: 1px solid var(--border); overflow: hidden;
+  position:relative; padding:48px 24px 36px;
+  text-align:center; border-bottom:1px solid var(--border); overflow:hidden;
 }
 header::before {
   content:''; position:absolute; top:-60px; left:50%; transform:translateX(-50%);
   width:600px; height:200px;
-  background: radial-gradient(ellipse, rgba(196,18,48,0.25) 0%, transparent 70%);
+  background:radial-gradient(ellipse,rgba(196,18,48,0.25) 0%,transparent 70%);
   pointer-events:none;
 }
 .header-badge {
@@ -60,27 +53,16 @@ h1 span { color:var(--red); }
 header p { margin-top:10px; color:var(--text-muted); font-size:14px; }
 
 /* ── CONTAINER ── */
-.container {
-  max-width: 1080px; margin:0 auto;
-  padding: 32px 24px 80px;
-  position:relative; z-index:1;
-  /* width:100% + box-sizing:border-box đã có từ reset */
-}
+.container { max-width:1080px; margin:0 auto; padding:32px 24px 80px; position:relative; z-index:1; }
 
 /* ── STATS ── */
 .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px; }
 .stat-card {
   background:var(--surface); border:1px solid var(--border);
-  border-radius:var(--radius); padding:20px;
-  position:relative; overflow:hidden;
+  border-radius:var(--radius); padding:20px; position:relative; overflow:hidden;
 }
-.stat-card.primary {
-  border-color:rgba(196,18,48,0.4);
-  background:linear-gradient(135deg,rgba(196,18,48,0.08),var(--surface));
-}
-.stat-card::after {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--border);
-}
+.stat-card.primary { border-color:rgba(196,18,48,0.4); background:linear-gradient(135deg,rgba(196,18,48,0.08),var(--surface)); }
+.stat-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--border); }
 .stat-card.primary::after { background:linear-gradient(90deg,var(--red),transparent); }
 .stat-label { font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px; }
 .stat-value { font-family:'IBM Plex Mono',monospace; font-size:32px; font-weight:500; color:var(--text); line-height:1; }
@@ -89,19 +71,13 @@ header p { margin-top:10px; color:var(--text-muted); font-size:14px; }
 .rank-bar-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--red-dark),var(--red-light)); transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
 .rank-label { margin-top:6px; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; }
 
-/* ── GRID ── */
+/* ── MAIN GRID ── */
 .main-grid { display:grid; grid-template-columns:380px 1fr; gap:20px; align-items:start; }
-/* min-width:0 là bắt buộc để grid item không vượt quá grid container */
 .main-grid > div { min-width:0; }
 
 /* ── PANEL ── */
-/* Panel nhập liệu: KHÔNG overflow:hidden vì có autocomplete dropdown */
-.panel {
-  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
-}
-/* Panel bảng điểm: overflow:hidden an toàn (không có autocomplete) */
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
 .panel-table { overflow:hidden; }
-
 .panel-header {
   padding:16px 20px; border-bottom:1px solid var(--border);
   font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
@@ -114,7 +90,6 @@ header p { margin-top:10px; color:var(--text-muted); font-size:14px; }
 .form-group { margin-bottom:14px; }
 label { display:block; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
 .input-wrapper { position:relative; }
-
 input[type="text"], input[type="number"], select {
   width:100%; background:var(--surface2); border:1px solid var(--border2);
   border-radius:7px; padding:11px 14px; font-family:'Space Grotesk',sans-serif;
@@ -141,25 +116,25 @@ select option { background:#1a1d22; }
 .ac-name { font-size:13px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .ac-credits { font-size:11px; color:var(--text-muted); flex-shrink:0; background:var(--border); padding:2px 6px; border-radius:4px; }
 
-/* ── GRADE GRID ── */
-.grade-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:6px; }
+/* ── GRADE GRID (3 cột, 9 nút) ── */
+.grade-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:6px; }
 .grade-btn {
   background:var(--surface2); border:1px solid var(--border2); border-radius:6px;
   padding:9px 4px; font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600;
   color:var(--text-dim); cursor:pointer; transition:all 0.15s; text-align:center;
-  /* min-width:0 cho phép co lại trong grid */
   min-width:0; overflow:hidden;
 }
 .grade-btn:hover { border-color:var(--red); color:var(--text); }
 .grade-btn.selected { background:var(--red); border-color:var(--red); color:white; }
-.grade-btn[data-grade="A"].selected   { background:#16a34a; border-color:#16a34a; }
-.grade-btn[data-grade="B+"].selected  { background:#2563eb; border-color:#2563eb; }
-.grade-btn[data-grade="B"].selected   { background:#0891b2; border-color:#0891b2; }
-.grade-btn[data-grade="C+"].selected  { background:#d97706; border-color:#d97706; }
-.grade-btn[data-grade="C"].selected   { background:#ea580c; border-color:#ea580c; }
-.grade-btn[data-grade="D+"].selected  { background:#dc2626; border-color:#dc2626; }
-.grade-btn[data-grade="D"].selected   { background:#9f1239; border-color:#9f1239; }
-.grade-btn[data-grade="F"].selected   { background:#374151; border-color:#374151; }
+.grade-btn[data-grade="A+"].selected { background:#059669; border-color:#059669; }
+.grade-btn[data-grade="A"].selected  { background:#16a34a; border-color:#16a34a; }
+.grade-btn[data-grade="B+"].selected { background:#2563eb; border-color:#2563eb; }
+.grade-btn[data-grade="B"].selected  { background:#0891b2; border-color:#0891b2; }
+.grade-btn[data-grade="C+"].selected { background:#d97706; border-color:#d97706; }
+.grade-btn[data-grade="C"].selected  { background:#ea580c; border-color:#ea580c; }
+.grade-btn[data-grade="D+"].selected { background:#dc2626; border-color:#dc2626; }
+.grade-btn[data-grade="D"].selected  { background:#9f1239; border-color:#9f1239; }
+.grade-btn[data-grade="F"].selected  { background:#374151; border-color:#374151; }
 
 /* ── ADD BTN ── */
 .btn-add {
@@ -181,14 +156,7 @@ select option { background:#1a1d22; }
 .filter-input::placeholder { color:var(--text-muted); }
 
 /* ── TABLE ── */
-.table-wrap {
-  /* overflow:auto tạo scroll context nội bộ */
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  /* display:block bắt buộc để Safari nhận overflow */
-  display:block;
-  width:100%;
-}
+.table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; display:block; width:100%; }
 table { width:100%; border-collapse:collapse; }
 thead th {
   padding:12px 16px; text-align:left; font-size:10px; font-weight:700;
@@ -207,14 +175,15 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
 
 /* ── GRADE BADGE ── */
 .grade-badge { display:inline-block; padding:3px 10px; border-radius:5px; font-size:12px; font-weight:700; letter-spacing:0.03em; }
-.g-a  { background:rgba(22,163,74,0.15);  color:#4ade80; }
-.g-b+ { background:rgba(37,99,235,0.15);  color:#60a5fa; }
-.g-b  { background:rgba(8,145,178,0.15);  color:#22d3ee; }
-.g-c+ { background:rgba(217,119,6,0.15);  color:#fbbf24; }
-.g-c  { background:rgba(234,88,12,0.15);  color:#fb923c; }
-.g-d+ { background:rgba(220,38,38,0.15);  color:#f87171; }
-.g-d  { background:rgba(159,18,57,0.15);  color:#fb7185; }
-.g-f  { background:rgba(55,65,81,0.2);    color:#6b7280; }
+.g-a\+ { background:rgba(5,150,105,0.18);  color:#34d399; }
+.g-a   { background:rgba(22,163,74,0.15);  color:#4ade80; }
+.g-b\+ { background:rgba(37,99,235,0.15);  color:#60a5fa; }
+.g-b   { background:rgba(8,145,178,0.15);  color:#22d3ee; }
+.g-c\+ { background:rgba(217,119,6,0.15);  color:#fbbf24; }
+.g-c   { background:rgba(234,88,12,0.15);  color:#fb923c; }
+.g-d\+ { background:rgba(220,38,38,0.15);  color:#f87171; }
+.g-d   { background:rgba(159,18,57,0.15);  color:#fb7185; }
+.g-f   { background:rgba(55,65,81,0.2);    color:#6b7280; }
 .d4-val { font-family:'IBM Plex Mono',monospace; font-size:13px; text-align:center; }
 
 /* ── DELETE BTN ── */
@@ -257,32 +226,17 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
 ::-webkit-scrollbar-track { background:var(--surface); }
 ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:99px; }
 
-
 /* ── SUGGESTION PANEL ── */
-.suggest-panel {
-  margin-top: 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.suggest-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-}
+.suggest-panel { margin-top:20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.suggest-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 .suggest-header-left { display:flex; align-items:center; gap:8px; }
-.suggest-header-left svg { color: #fbbf24; }
+.suggest-header-left svg { color:#fbbf24; }
 .suggest-title { font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); }
 .suggest-tabs { display:flex; gap:6px; }
-.suggest-tab {
-  padding: 5px 14px; border-radius: 99px; font-size: 12px; font-weight: 600;
-  cursor: pointer; border: 1px solid var(--border2); background: var(--surface2);
-  color: var(--text-muted); transition: all 0.15s; white-space: nowrap;
-}
-.suggest-tab.active-gioi   { background:rgba(74,222,128,0.12); border-color:rgba(74,222,128,0.4); color:#4ade80; }
-.suggest-tab.active-xuatsac{ background:rgba(251,191,36,0.12); border-color:rgba(251,191,36,0.4); color:#fbbf24; }
-.suggest-body { padding: 20px; }
+.suggest-tab { padding:5px 14px; border-radius:99px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid var(--border2); background:var(--surface2); color:var(--text-muted); transition:all 0.15s; white-space:nowrap; }
+.suggest-tab.active-gioi    { background:rgba(74,222,128,0.12); border-color:rgba(74,222,128,0.4); color:#4ade80; }
+.suggest-tab.active-xuatsac { background:rgba(251,191,36,0.12); border-color:rgba(251,191,36,0.4); color:#fbbf24; }
+.suggest-body { padding:20px; }
 .suggest-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
 .sum-card { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px 12px; text-align:center; }
 .sum-label { font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
@@ -296,10 +250,7 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
 .progress-fill.gioi    { background:linear-gradient(90deg,#16a34a,#4ade80); }
 .progress-fill.xuatsac { background:linear-gradient(90deg,#b45309,#fbbf24); }
 .suggest-list { display:flex; flex-direction:column; gap:8px; }
-.suggest-item {
-  background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:12px 14px;
-  display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; transition:border-color 0.15s;
-}
+.suggest-item { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:12px 14px; display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; transition:border-color 0.15s; }
 .suggest-item:hover { border-color:var(--border2); }
 .si-name { font-size:13px; color:var(--text); margin-bottom:4px; font-weight:500; }
 .si-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
@@ -313,7 +264,38 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
 .suggest-empty { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; }
 .suggest-empty .ei { font-size:32px; margin-bottom:10px; opacity:0.5; }
 .suggest-note { margin-top:14px; padding:10px 14px; background:rgba(255,255,255,0.02); border-radius:6px; border-left:2px solid var(--border2); font-size:11px; color:var(--text-muted); line-height:1.6; }
+
+/* ════════════════════════════════════════════
+   RESPONSIVE ≤ 900px
+════════════════════════════════════════════ */
+@media (max-width:900px) {
+  .main-grid { grid-template-columns:1fr; }
+}
+
+/* ════════════════════════════════════════════
+   RESPONSIVE ≤ 600px
+════════════════════════════════════════════ */
 @media (max-width:600px) {
+  header { padding:28px 16px 20px; }
+  header p { font-size:12px; }
+  .container { padding:16px 12px 80px; }
+  .stats-row { grid-template-columns:1fr 1fr; gap:10px; }
+  .stats-row .stat-card:nth-child(3) { grid-column:1/-1; }
+  .stat-card { padding:14px; }
+  .stat-value { font-size:26px; }
+  input[type="text"], input[type="number"], select, .filter-input { font-size:16px; padding:12px 14px; }
+  .panel-body { padding:16px 14px; }
+  .grade-grid { gap:5px; }
+  .grade-btn { padding:10px 0; font-size:13px; }
+  .btn-add { padding:14px; font-size:14px; }
+  table { min-width:320px; }
+  td, thead th { padding:9px 8px; font-size:12px; }
+  .btn-del { padding:7px 9px; }
+  .action-row { flex-wrap:wrap; gap:8px; padding:12px 14px; }
+  .btn-sec { flex:1 1 calc(50% - 4px); padding:10px 6px; font-size:11px; }
+  .btn-sec:last-child { flex:1 1 100%; }
+  .filter-bar { padding:12px 14px; }
+  .toast { left:12px; right:12px; bottom:16px; text-align:center; }
   .suggest-summary { grid-template-columns:1fr 1fr; }
   .suggest-summary .sum-card:last-child { grid-column:1/-1; }
   .suggest-tabs { gap:4px; }
@@ -323,69 +305,14 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
 }
 
 /* ════════════════════════════════════════════
-   RESPONSIVE ≤ 900px (tablet → 1 cột)
+   RESPONSIVE ≤ 390px
 ════════════════════════════════════════════ */
-@media (max-width: 900px) {
-  .main-grid { grid-template-columns:1fr; }
-}
-
-/* ════════════════════════════════════════════
-   RESPONSIVE ≤ 600px (mobile)
-════════════════════════════════════════════ */
-@media (max-width: 600px) {
-  header { padding:28px 16px 20px; }
-  header p { font-size:12px; }
-
-  /* Container padding đủ nhỏ để panel có chỗ */
-  .container { padding:16px 12px 80px; }
-
-  /* Stats */
-  .stats-row { grid-template-columns:1fr 1fr; gap:10px; }
-  .stats-row .stat-card:nth-child(3) { grid-column:1/-1; }
-  .stat-card { padding:14px; }
-  .stat-value { font-size:26px; }
-
-  /* Inputs — font 16px ngăn iOS zoom */
-  input[type="text"], input[type="number"], select, .filter-input {
-    font-size:16px; padding:12px 14px;
-  }
-
-  /* Panel body */
-  .panel-body { padding:16px 14px; }
-
-  /* Grade buttons: co theo grid, không dùng padding ngang */
-  .grade-grid { gap:5px; }
-  .grade-btn { padding:10px 0; font-size:13px; }
-
-  .btn-add { padding:14px; font-size:14px; }
-
-  /* Table — min-width nhỏ hơn viewport để không đẩy panel */
-  table { min-width:320px; }
-
-  td, thead th { padding:9px 8px; font-size:12px; }
-  .btn-del { padding:7px 9px; }
-
-  /* Action row */
-  .action-row { flex-wrap:wrap; gap:8px; padding:12px 14px; }
-  .btn-sec { flex:1 1 calc(50% - 4px); padding:10px 6px; font-size:11px; }
-  .btn-sec:last-child { flex:1 1 100%; }
-
-  .filter-bar { padding:12px 14px; }
-
-  .toast { left:12px; right:12px; bottom:16px; text-align:center; }
-}
-
-/* ════════════════════════════════════════════
-   RESPONSIVE ≤ 390px (iPhone SE / nhỏ nhất)
-════════════════════════════════════════════ */
-@media (max-width: 390px) {
+@media (max-width:390px) {
   h1 { font-size:22px; }
   .container { padding:12px 10px 80px; }
   .panel-body { padding:14px 10px; }
-
   .stats-row { grid-template-columns:1fr; }
   .stats-row .stat-card:nth-child(3) { grid-column:1; }
-
   .grade-grid { gap:4px; }
   .grade-btn { font-size:12px; padding:9px 0; }
 }
@@ -422,7 +349,7 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
 
   <div class="main-grid">
 
-    <!-- INPUT PANEL (không overflow:hidden — có autocomplete) -->
+    <!-- INPUT PANEL -->
     <div>
       <div class="panel">
         <div class="panel-header">
@@ -451,6 +378,7 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
           <div class="form-group">
             <label>Điểm chữ</label>
             <div class="grade-grid">
+              <button class="grade-btn" data-grade="A+" onclick="selectGrade(this)">A+</button>
               <button class="grade-btn" data-grade="A"  onclick="selectGrade(this)">A</button>
               <button class="grade-btn" data-grade="B+" onclick="selectGrade(this)">B+</button>
               <button class="grade-btn" data-grade="B"  onclick="selectGrade(this)">B</button>
@@ -470,7 +398,7 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
       </div>
     </div>
 
-    <!-- TABLE PANEL (panel-table có overflow:hidden) -->
+    <!-- TABLE PANEL -->
     <div>
       <div class="panel panel-table">
         <div class="panel-header">
@@ -508,7 +436,6 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
     </div>
 
   </div>
-</div>
 
   <!-- SUGGEST PANEL -->
   <div class="suggest-panel" id="suggestPanel" style="display:none">
@@ -550,19 +477,22 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
       </div>
       <div class="suggest-list" id="suggestList"></div>
       <div class="suggest-note">
-        💡 Phần <strong style="color:#4ade80">Gợi ý cải thiện</strong>: hiển thị điểm tối thiểu cần đạt để đạt mục tiêu khi cải thiện <strong style="color:var(--text-dim)">1 môn</strong> hiện tại chưa có tính năng cải thiện nhiều môn cùng lúc.
+        💡 Phần <strong style="color:#4ade80">Gợi ý cải thiện</strong>: hiển thị điểm tối thiểu cần đạt để đạt mục tiêu khi cải thiện <strong style="color:#4ade80">1 môn</strong> hiện tại chưa có tính năng cải thiện nhiều môn cùng lúc.
       </div>
     </div>
   </div>
 
+</div>
+
 <footer style="text-align:center;padding:24px 16px 40px;color:var(--text-muted);font-size:13px;position:relative;z-index:1;">
-   Được tạo bởi <a href="https://www.facebook.com/vanthe06" target="_blank" rel="noopener" style="color:var(--red-light);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(232,41,58,0.3);padding-bottom:1px;transition:color 0.15s;">Nguyễn Văn Thế</a>
+  Được tạo bởi <a href="https://www.facebook.com/vanthe06" target="_blank" rel="noopener" style="color:var(--red-light);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(232,41,58,0.3);padding-bottom:1px;transition:color 0.15s;">Nguyễn Văn Thế</a>
 </footer>
 
 <div class="toast" id="toast"></div>
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
 
 <script>
+// ── DATABASE ──
 let DB_ENTRIES = [];
 async function loadCoursesData() {
   try {
@@ -578,11 +508,20 @@ async function loadCoursesData() {
 }
 loadCoursesData();
 
+// ── STATE ──
 let courses = JSON.parse(localStorage.getItem('hust_cpa_v2')||'[]');
 let selectedGrade = null;
-const GRADE_MAP   = {A:4.0,'B+':3.5,B:3.0,'C+':2.5,C:2.0,'D+':1.5,D:1.0,F:0.0};
-const GRADE_CLASS = {A:'g-a','B+':'g-b+',B:'g-b','C+':'g-c+',C:'g-c','D+':'g-d+',D:'g-d',F:'g-f'};
 
+const GRADE_MAP = {
+  'A+':4.0, 'A':4.0, 'B+':3.5, 'B':3.0,
+  'C+':2.5, 'C':2.0, 'D+':1.5, 'D':1.0, 'F':0.0
+};
+const GRADE_CLASS = {
+  'A+':'g-a+', 'A':'g-a', 'B+':'g-b+', 'B':'g-b',
+  'C+':'g-c+', 'C':'g-c', 'D+':'g-d+', 'D':'g-d', 'F':'g-f'
+};
+
+// ── AUTOCOMPLETE ──
 function onCodeInput() {
   const q=document.getElementById('inputCode').value.trim().toUpperCase();
   const list=document.getElementById('acList');
@@ -616,19 +555,21 @@ document.addEventListener('click',e=>{
   }
 });
 
+// ── GRADE ──
 function selectGrade(btn) {
   document.querySelectorAll('.grade-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected'); selectedGrade=btn.dataset.grade;
 }
 
+// ── ADD ──
 function addCourse() {
   const code=document.getElementById('inputCode').value.trim().toUpperCase()||'---';
   const name=document.getElementById('inputName').value.trim();
   const credits=parseFloat(document.getElementById('inputCredits').value);
   const grade=selectedGrade;
-  if(!name) return toast('Vui lòng nhập tên môn học','error');
-  if(isNaN(credits)||credits<=0) return toast('Vui lòng nhập số tín chỉ hợp lệ','error');
-  if(!grade) return toast('Vui lòng chọn điểm chữ','error');
+  if(!name)                          return toast('Vui lòng nhập tên môn học','error');
+  if(isNaN(credits)||credits<=0)     return toast('Vui lòng nhập số tín chỉ hợp lệ','error');
+  if(!grade)                         return toast('Vui lòng chọn điểm chữ','error');
   const dup=courses.find(c=>(code!=='---'&&c.code===code)||c.name.toLowerCase()===name.toLowerCase());
   if(dup) return toast('⚠️ Môn học đã tồn tại!','error');
   courses.push({code,name,credits,grade,gpa4:GRADE_MAP[grade]});
@@ -641,9 +582,11 @@ function addCourse() {
   toast('✓ Đã thêm môn học','success'); renderAll();
 }
 
+// ── DELETE / SAVE ──
 function deleteCourse(i){ courses.splice(i,1); save(); renderAll(); }
 function save(){ localStorage.setItem('hust_cpa_v2',JSON.stringify(courses)); }
 
+// ── RENDER TABLE ──
 function renderTable() {
   const q=document.getElementById('filterInput').value.toLowerCase();
   const tbody=document.getElementById('tableBody');
@@ -658,6 +601,7 @@ function renderTable() {
   }).join('');
 }
 
+// ── RENDER STATS ──
 function renderStats() {
   let tc=0,ws=0;
   courses.forEach(c=>{tc+=c.credits;ws+=c.gpa4*c.credits;});
@@ -676,8 +620,10 @@ function renderStats() {
   document.getElementById('rankLabel').textContent=rank;
   document.getElementById('rankLabel').style.color=color;
 }
+
 function renderAll(){ renderTable(); renderStats(); renderSuggest(); }
 
+// ── EXPORT / IMPORT ──
 function exportJSON() {
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(courses,null,2)],{type:'application/json'}));
@@ -702,6 +648,7 @@ function clearAll() {
   if(confirm(`Xóa tất cả ${courses.length} môn học?`)){courses=[];save();renderAll();toast('Đã xóa tất cả','success');}
 }
 
+// ── TOAST ──
 let toastTimer;
 function toast(msg,type='') {
   const el=document.getElementById('toast');
@@ -712,10 +659,10 @@ function toast(msg,type='') {
 
 // ── SUGGESTION ENGINE ──
 let suggestTarget = 'gioi';
-const TARGETS = { gioi: 3.20, xuatsac: 3.60 };
-const TARGET_LABELS = { gioi: '3.20', xuatsac: '3.60' };
+const TARGETS      = { gioi:3.20, xuatsac:3.60 };
+const TARGET_LABELS = { gioi:'3.20', xuatsac:'3.60' };
 
-// Thang điểm chữ theo thứ tự tăng dần
+// Thang điểm theo thứ tự tăng dần (A+ = 4.0, tách riêng khỏi A để tránh trùng)
 const GRADE_STEPS = [
   { grade:'F',  val:0.0 },
   { grade:'D',  val:1.0 },
@@ -727,24 +674,23 @@ const GRADE_STEPS = [
   { grade:'A',  val:4.0 },
 ];
 
-// Tìm điểm chữ tối thiểu cần đạt để CPA >= target
-// Trả về { grade, val } hoặc null nếu dù lên A cũng không đủ
+// Tìm điểm chữ tối thiểu cần đạt để CPA >= target khi cải thiện 1 môn
 function minGradeNeeded(courseIdx, ws, tc, target) {
   const c = courses[courseIdx];
   const wsWithout = ws - c.gpa4 * c.credits;
   for (const step of GRADE_STEPS) {
-    if (step.val <= c.gpa4) continue; // Không cần cải thiện nếu đã bằng/cao hơn
+    if (step.val <= c.gpa4) continue;
     const newCpa = (wsWithout + step.val * c.credits) / tc;
     if (newCpa >= target) return { ...step, newCpa };
   }
-  return null; // Ngay cả A cũng không đủ (cần cải thiện nhiều môn)
+  return null;
 }
 
 function switchTarget(t) {
   suggestTarget = t;
-  document.getElementById('tabGioi').className    = 'suggest-tab' + (t==='gioi'    ? ' active-gioi'    : '');
-  document.getElementById('tabXuatsac').className = 'suggest-tab' + (t==='xuatsac' ? ' active-xuatsac' : '');
-  document.getElementById('progressFill').className = 'progress-fill ' + t;
+  document.getElementById('tabGioi').className    = 'suggest-tab'+(t==='gioi'?' active-gioi':'');
+  document.getElementById('tabXuatsac').className = 'suggest-tab'+(t==='xuatsac'?' active-xuatsac':'');
+  document.getElementById('progressFill').className = 'progress-fill '+t;
   renderSuggest();
 }
 
@@ -754,24 +700,23 @@ function renderSuggest() {
   panel.style.display = 'block';
 
   const target = TARGETS[suggestTarget];
-
   let tc=0, ws=0;
   courses.forEach(c=>{ tc+=c.credits; ws+=c.gpa4*c.credits; });
   const cpa = tc===0 ? 0 : ws/tc;
 
-  // Update summary cards
+  // Summary
   document.getElementById('sumCurrent').textContent = cpa.toFixed(2);
   document.getElementById('sumTarget').textContent  = TARGET_LABELS[suggestTarget];
-  const gap = Math.max(0, target - cpa);
+  const gap = Math.max(0, target-cpa);
   const sumGap = document.getElementById('sumGap');
   sumGap.textContent = gap.toFixed(2);
   sumGap.style.color = gap===0 ? '#4ade80' : '#fb923c';
 
-  // Progress bar
-  const pct = Math.min(100, Math.round((cpa / target) * 100));
-  document.getElementById('progressFill').style.width = pct + '%';
+  // Progress
+  const pct = Math.min(100, Math.round((cpa/target)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
   const pctEl = document.getElementById('progressPct');
-  pctEl.textContent = pct + '%';
+  pctEl.textContent = pct+'%';
   pctEl.style.color = pct>=100 ? '#4ade80' : suggestTarget==='xuatsac' ? '#fbbf24' : '#4ade80';
 
   const list = document.getElementById('suggestList');
@@ -782,51 +727,41 @@ function renderSuggest() {
   }
 
   const isGold = suggestTarget === 'xuatsac';
-
-  // Phân loại từng môn
-  const solo   = []; // Cải thiện 1 mình là đủ
-  const partial = []; // Góp phần nhưng chưa đủ một mình
+  const solo = [], partial = [];
 
   courses.forEach((c, i) => {
-    if (c.gpa4 === 4.0) return; // Đã A rồi
+    // Bỏ qua môn đã đạt 4.0 (A hoặc A+)
+    if (c.gpa4 >= 4.0) return;
 
     const needed = minGradeNeeded(i, ws, tc, target);
-
-    // Tính CPA nếu lên A (để biết mức đóng góp tối đa)
     const wsWithout = ws - c.gpa4 * c.credits;
     const maxCpa = (wsWithout + 4.0 * c.credits) / tc;
     const gain = maxCpa - cpa;
     const gainPerCredit = gain / c.credits;
 
     if (needed) {
-      // Môn này một mình đủ để đạt mục tiêu
-      solo.push({ ...c, i, needed, maxCpa, gain, gainPerCredit,
-        targetCpa: needed.newCpa });
+      solo.push({ ...c, i, needed, maxCpa, gain, gainPerCredit });
     } else {
-      // Ngay cả lên A cũng chưa đủ — vẫn liệt kê vì đóng góp nhiều
       partial.push({ ...c, i, maxCpa, gain, gainPerCredit });
     }
   });
 
-  // Sắp xếp: solo theo điểm cần thấp nhất (dễ nhất), partial theo gain cao nhất
+  // solo: dễ nhất trước (điểm cần thấp nhất), partial: hiệu quả nhất trước
   solo.sort((a,b) => a.needed.val - b.needed.val || b.gainPerCredit - a.gainPerCredit);
   partial.sort((a,b) => b.gainPerCredit - a.gainPerCredit);
 
   if (!solo.length && !partial.length) {
-    list.innerHTML = `<div class="suggest-empty"><div class="ei">📚</div><p>Tất cả môn đều đã đạt A.</p></div>`;
+    list.innerHTML = `<div class="suggest-empty"><div class="ei">📚</div><p>Tất cả môn đều đã đạt điểm tối đa.</p></div>`;
     return;
   }
 
   let html = '';
 
   if (solo.length) {
-    html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${isGold?'#fbbf24':'#4ade80'};margin-bottom:8px;padding:0 2px;">
-      ✦ Cải thiện 1 môn là đủ đạt mục tiêu
-    </div>`;
+    html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${isGold?'#fbbf24':'#4ade80'};margin-bottom:8px;padding:0 2px;">✦ Cải thiện 1 môn là đủ đạt mục tiêu</div>`;
     html += solo.slice(0,5).map((c, rank) => {
-      const neededGc = GRADE_CLASS[c.needed.grade] || 'g-f';
+      const neededGc  = GRADE_CLASS[c.needed.grade] || 'g-f';
       const currentGc = GRADE_CLASS[c.grade] || 'g-f';
-      const alreadyHigher = c.needed.val > c.gpa4;
       return `<div class="suggest-item" style="border-color:${isGold?'rgba(251,191,36,0.25)':'rgba(74,222,128,0.25)'}">
         <div class="si-left">
           <div class="si-name">${rank+1}. ${c.name}</div>
@@ -849,9 +784,7 @@ function renderSuggest() {
   }
 
   if (partial.length) {
-    html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin:${solo.length?'16px':'0'}px 0 8px;padding:0 2px;">
-      ○ Góp phần tăng CPA (cần cải thiện thêm nhiều môn)
-    </div>`;
+    html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin:${solo.length?'16px':'0'}px 0 8px;padding:0 2px;">○ Góp phần tăng CPA (cần cải thiện thêm nhiều môn)</div>`;
     html += partial.slice(0,5).map((c, rank) => {
       const currentGc = GRADE_CLASS[c.grade] || 'g-f';
       return `<div class="suggest-item">
@@ -877,7 +810,7 @@ function renderSuggest() {
   list.innerHTML = html;
 }
 
-
+// ── INIT ──
 renderAll();
 </script>
 </body>
