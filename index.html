@@ -2,10 +2,13 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>HUST CPA Calculator</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /* ============================================
+     CSS VARIABLES
+  ============================================ */
   :root {
     --red: #C41230;
     --red-dark: #8B0000;
@@ -25,7 +28,18 @@
     --radius: 10px;
   }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ============================================
+     RESET & BASE
+  ============================================ */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
 
   body {
     font-family: 'Space Grotesk', sans-serif;
@@ -33,6 +47,7 @@
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
+    width: 100%;
   }
 
   /* NOISE TEXTURE */
@@ -46,7 +61,9 @@
     opacity: 0.6;
   }
 
-  /* HEADER */
+  /* ============================================
+     HEADER
+  ============================================ */
   header {
     position: relative;
     padding: 48px 24px 36px;
@@ -94,7 +111,7 @@
   }
 
   h1 {
-    font-size: clamp(28px, 5vw, 48px);
+    font-size: clamp(26px, 5vw, 48px);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.1;
@@ -108,16 +125,21 @@
     font-size: 14px;
   }
 
-  /* LAYOUT */
+  /* ============================================
+     LAYOUT CONTAINER
+  ============================================ */
   .container {
     max-width: 1080px;
     margin: 0 auto;
     padding: 32px 24px 80px;
     position: relative;
     z-index: 1;
+    width: 100%;
   }
 
-  /* SCORE CARDS */
+  /* ============================================
+     STATS ROW
+  ============================================ */
   .stats-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -183,7 +205,9 @@
     background: rgba(255,255,255,0.06);
   }
 
-  /* MAIN GRID */
+  /* ============================================
+     MAIN GRID
+  ============================================ */
   .main-grid {
     display: grid;
     grid-template-columns: 380px 1fr;
@@ -191,18 +215,15 @@
     align-items: start;
   }
 
-  @media (max-width: 768px) {
-    .main-grid { grid-template-columns: 1fr; }
-    .stats-row { grid-template-columns: 1fr 1fr; }
-    .stats-row .stat-card:last-child { grid-column: span 2; }
-  }
-
-  /* INPUT PANEL */
+  /* ============================================
+     PANEL — KHÔNG dùng overflow:hidden để tránh
+     cắt mất autocomplete dropdown
+  ============================================ */
   .panel {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    overflow: hidden;
+    /* overflow: hidden đã bị XÓA — đây là nguyên nhân gốc rễ */
   }
 
   .panel-header {
@@ -216,13 +237,16 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    border-radius: var(--radius) var(--radius) 0 0;
   }
 
   .panel-header svg { color: var(--red); }
 
   .panel-body { padding: 20px; }
 
-  /* FORM */
+  /* ============================================
+     FORM
+  ============================================ */
   .form-group {
     margin-bottom: 14px;
   }
@@ -253,6 +277,8 @@
     outline: none;
     transition: border-color 0.15s, background 0.15s;
     -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 
   input:focus, select:focus {
@@ -261,10 +287,11 @@
   }
 
   input::placeholder { color: var(--text-muted); }
-
   select option { background: #1a1d22; }
 
-  /* AUTOCOMPLETE */
+  /* ============================================
+     AUTOCOMPLETE
+  ============================================ */
   .autocomplete-list {
     position: absolute;
     top: calc(100% + 4px);
@@ -274,9 +301,9 @@
     border-radius: 7px;
     max-height: 220px;
     overflow-y: auto;
-    z-index: 100;
+    z-index: 9999;
     display: none;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
   }
 
   .autocomplete-list.show { display: block; }
@@ -320,7 +347,9 @@
     border-radius: 4px;
   }
 
-  /* GRADE SELECT */
+  /* ============================================
+     GRADE BUTTONS
+  ============================================ */
   .grade-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -340,27 +369,24 @@
     cursor: pointer;
     transition: all 0.15s;
     text-align: center;
+    min-width: 0;
   }
 
   .grade-btn:hover { border-color: var(--red); color: var(--text); }
+  .grade-btn.selected { background: var(--red); border-color: var(--red); color: white; }
 
-  .grade-btn.selected {
-    background: var(--red);
-    border-color: var(--red);
-    color: white;
-  }
+  .grade-btn[data-grade="A"].selected   { background: #16a34a; border-color: #16a34a; }
+  .grade-btn[data-grade="B+"].selected  { background: #2563eb; border-color: #2563eb; }
+  .grade-btn[data-grade="B"].selected   { background: #0891b2; border-color: #0891b2; }
+  .grade-btn[data-grade="C+"].selected  { background: #d97706; border-color: #d97706; }
+  .grade-btn[data-grade="C"].selected   { background: #ea580c; border-color: #ea580c; }
+  .grade-btn[data-grade="D+"].selected  { background: #dc2626; border-color: #dc2626; }
+  .grade-btn[data-grade="D"].selected   { background: #9f1239; border-color: #9f1239; }
+  .grade-btn[data-grade="F"].selected   { background: #374151; border-color: #374151; }
 
-  /* GRADE COLORS */
-  .grade-btn[data-grade="A"].selected { background: #16a34a; border-color: #16a34a; }
-  .grade-btn[data-grade="B+"].selected { background: #2563eb; border-color: #2563eb; }
-  .grade-btn[data-grade="B"].selected { background: #0891b2; border-color: #0891b2; }
-  .grade-btn[data-grade="C+"].selected { background: #d97706; border-color: #d97706; }
-  .grade-btn[data-grade="C"].selected { background: #ea580c; border-color: #ea580c; }
-  .grade-btn[data-grade="D+"].selected { background: #dc2626; border-color: #dc2626; }
-  .grade-btn[data-grade="D"].selected { background: #9f1239; border-color: #9f1239; }
-  .grade-btn[data-grade="F"].selected { background: #374151; border-color: #374151; }
-
-  /* ADD BUTTON */
+  /* ============================================
+     ADD BUTTON
+  ============================================ */
   .btn-add {
     width: 100%;
     padding: 13px;
@@ -380,7 +406,9 @@
   .btn-add:hover { background: var(--red-light); }
   .btn-add:active { transform: scale(0.99); }
 
-  /* FILTERS */
+  /* ============================================
+     FILTER BAR
+  ============================================ */
   .filter-bar {
     display: flex;
     gap: 8px;
@@ -405,14 +433,19 @@
   .filter-input:focus { border-color: rgba(196,18,48,0.4); }
   .filter-input::placeholder { color: var(--text-muted); }
 
-  /* TABLE */
+  /* ============================================
+     TABLE
+  ============================================ */
   .table-wrap {
+    width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 460px;
   }
 
   thead th {
@@ -454,6 +487,7 @@
   .td-name {
     color: var(--text);
     max-width: 240px;
+    word-break: break-word;
   }
 
   .td-center { text-align: center; }
@@ -465,7 +499,9 @@
     color: var(--text-dim);
   }
 
-  /* GRADE BADGE */
+  /* ============================================
+     GRADE BADGE
+  ============================================ */
   .grade-badge {
     display: inline-block;
     padding: 3px 10px;
@@ -490,7 +526,9 @@
     text-align: center;
   }
 
-  /* DELETE BTN */
+  /* ============================================
+     DELETE BUTTON
+  ============================================ */
   .btn-del {
     background: none;
     border: 1px solid transparent;
@@ -510,22 +548,21 @@
     color: #f87171;
   }
 
-  /* EMPTY STATE */
+  /* ============================================
+     EMPTY STATE
+  ============================================ */
   .empty-state {
     padding: 60px 20px;
     text-align: center;
     color: var(--text-muted);
   }
 
-  .empty-icon {
-    font-size: 36px;
-    margin-bottom: 12px;
-    opacity: 0.4;
-  }
-
+  .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
   .empty-state p { font-size: 14px; }
 
-  /* RANK INDICATOR */
+  /* ============================================
+     RANK BAR
+  ============================================ */
   .rank-bar {
     height: 4px;
     border-radius: 2px;
@@ -549,12 +586,15 @@
     font-weight: 700;
   }
 
-  /* IMPORT/EXPORT */
+  /* ============================================
+     ACTION ROW
+  ============================================ */
   .action-row {
     display: flex;
     gap: 8px;
     padding: 12px 20px;
     border-top: 1px solid var(--border);
+    border-radius: 0 0 var(--radius) var(--radius);
   }
 
   .btn-sec {
@@ -575,12 +615,22 @@
 
   .btn-sec:hover { background: var(--surface3); border-color: var(--red); color: var(--text); }
 
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: var(--surface); }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+  /* ============================================
+     INFO HINT
+  ============================================ */
+  .info-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+    border-left: 2px solid var(--border2);
+  }
 
-  /* TOAST */
+  /* ============================================
+     TOAST
+  ============================================ */
   .toast {
     position: fixed;
     bottom: 24px; right: 24px;
@@ -592,7 +642,7 @@
     font-weight: 500;
     color: var(--text);
     box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    z-index: 1000;
+    z-index: 10000;
     transform: translateY(80px);
     opacity: 0;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -602,107 +652,147 @@
   .toast.error { border-color: rgba(220,38,38,0.5); color: #f87171; }
   .toast.success { border-color: rgba(22,163,74,0.5); color: #4ade80; }
 
-  /* GPA INFO */
-  .info-hint {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 8px;
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 6px;
-    border-left: 2px solid var(--border2);
-  }
-     /* =========================================
-     FIX LỖI KHOẢNG ĐEN (TRÀN VIỀN TỰ ĐỘNG ZOOM iOS)
-     ========================================= */
-  html, body {
-    width: 100% !important;
-    overflow-x: hidden !important;
-  }
+  /* ============================================
+     SCROLLBAR
+  ============================================ */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
 
-  .container {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-  }
-
-  /* =========================================
-     MOBILE OPTIMIZATION (ĐIỆN THOẠI)
-     ========================================= */
-  @media (max-width: 768px) {
-    /* DÒNG LỆNH SINH TỬ: Ép lưới thành 1 cột để không bị lồi ra 412px */
-    .main-grid { grid-template-columns: 1fr !important; }
-    
-    .stats-row { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
-    .stats-row .stat-card:last-child { grid-column: span 2 !important; }
-
-    header { padding: 32px 16px 24px !important; }
-    /* Ép lề 2 bên bằng nhau chằn chặn 16px */
-    .container { padding: 16px 16px 80px 16px !important; }
-    
-    input[type="text"], input[type="number"], select {
-      padding: 14px 16px !important;
-      font-size: 16px !important; 
+  /* ============================================
+     RESPONSIVE — TABLET (≤ 900px)
+  ============================================ */
+  @media (max-width: 900px) {
+    .main-grid {
+      grid-template-columns: 1fr;
     }
-    
-    .grade-btn { padding: 14px 4px !important; font-size: 14px !important; }
-    .btn-add { padding: 16px !important; font-size: 15px !important; }
-  
-    td, th { padding: 12px 10px !important; font-size: 12px !important; }
-    .td-name { max-width: 160px !important; white-space: normal !important; }
-    .btn-del { padding: 8px 12px !important; font-size: 14px !important; }
-  
-    .action-row { flex-wrap: wrap !important; gap: 10px !important; }
-    .btn-sec { flex: 1 1 calc(50% - 5px) !important; padding: 12px !important; }
-    .btn-sec:last-child { flex: 1 1 100% !important; }
-    
-    .toast { left: 16px !important; right: 16px !important; bottom: 20px !important; text-align: center !important; }
   }
-  
-  /* =========================================
-     TỐI ƯU MÀN HÌNH SIÊU NHỎ (iPhone SE, 15 Pro)
-     ========================================= */
-  @media (max-width: 480px) {
-    h1 { font-size: 28px !important; }
-    .stats-row { grid-template-columns: 1fr !important; gap: 10px !important; }
-    .stats-row .stat-card:last-child { grid-column: span 1 !important; }
-    .stat-card { padding: 16px !important; }
-    .stat-value { font-size: 28px !important; }
-  }
-  @media (max-width: 768px) {
+
+  /* ============================================
+     RESPONSIVE — MOBILE (≤ 600px)
+  ============================================ */
+  @media (max-width: 600px) {
+    header {
+      padding: 28px 16px 20px;
+    }
+
+    header p {
+      font-size: 12px;
+    }
+
+    .container {
+      padding: 16px 12px 80px;
+    }
+
+    /* Stats: 2 cột trên mobile, cột thứ 3 chiếm full */
+    .stats-row {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stats-row .stat-card:nth-child(3) {
+      grid-column: 1 / -1;
+    }
+
+    .stat-card { padding: 14px; }
+    .stat-value { font-size: 26px; }
+
+    /* Form inputs: font-size 16px để iOS không tự zoom */
+    input[type="text"],
+    input[type="number"],
+    select,
+    .filter-input {
+      font-size: 16px;
+      padding: 12px 14px;
+    }
+
+    /* Grade buttons */
     .grade-grid {
-      width: 100% !important;
-      gap: 5px !important; /* Thu hẹp khoảng cách giữa các nút 1 xíu */
+      gap: 5px;
     }
-    
+
     .grade-btn {
-      padding: 12px 0px !important; /* Ép lề ngang về 0 để nút không bị phình to */
-      min-width: 0 !important; /* Lệnh sinh tử: Ép nút phải thu nhỏ theo đúng tỷ lệ khung */
-      font-size: 13px !important;
-      word-wrap: break-word !important;
+      padding: 11px 2px;
+      font-size: 13px;
+    }
+
+    .btn-add {
+      padding: 15px;
+      font-size: 15px;
+    }
+
+    /* Table: cuộn ngang nội bộ, không tràn ra ngoài */
+    .table-wrap {
+      border-radius: 0;
+    }
+
+    table {
+      min-width: 440px;
+    }
+
+    td, thead th {
+      padding: 10px 10px;
+      font-size: 12px;
+    }
+
+    .btn-del {
+      padding: 7px 10px;
+      font-size: 14px;
+    }
+
+    /* Action buttons */
+    .action-row {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px 12px;
+    }
+
+    .btn-sec {
+      flex: 1 1 calc(50% - 4px);
+      padding: 11px 6px;
+      font-size: 11px;
+    }
+
+    .btn-sec:last-child {
+      flex: 1 1 100%;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      padding: 12px;
+    }
+
+    /* Panel body */
+    .panel-body {
+      padding: 16px;
+    }
+
+    /* Toast căn giữa */
+    .toast {
+      left: 12px;
+      right: 12px;
+      bottom: 16px;
+      text-align: center;
     }
   }
-  @media (max-width: 768px) {
-    /* Khóa chặt khung chứa bên ngoài, không cho phình */
-    .panel {
-      width: 100% !important;
-      max-width: 100vw !important;
-      overflow: hidden !important; 
+
+  /* ============================================
+     RESPONSIVE — NHỎ HƠN (≤ 380px — iPhone SE)
+  ============================================ */
+  @media (max-width: 380px) {
+    h1 { font-size: 22px; }
+
+    .stats-row {
+      grid-template-columns: 1fr;
     }
-    
-    /* Ép khu vực bảng phải tạo thanh cuộn ngang nội bộ */
-    .table-wrap {
-      width: 100% !important;
-      max-width: 100% !important;
-      overflow-x: auto !important;
-      -webkit-overflow-scrolling: touch !important; /* Vuốt mượt trên iPhone */
-      display: block !important; /* Lệnh sinh tử cho Safari: tách biệt bảng khỏi lưới */
+
+    .stats-row .stat-card:nth-child(3) {
+      grid-column: 1;
     }
-    
-    /* Cho bảng giữ form đẹp, người dùng sẽ vuốt ngang để xem điểm/nút xóa */
-    table {
-      width: 100% !important;
-      min-width: 450px !important; /* Cố định chiều rộng tối thiểu để chữ không bị bóp méo */
+
+    .grade-btn {
+      font-size: 12px;
+      padding: 10px 1px;
     }
   }
 </style>
@@ -762,7 +852,7 @@
               <input type="text" id="inputName" placeholder="Nhập tên học phần..." autocomplete="off" oninput="onNameInput()">
               <div class="autocomplete-list" id="acListName"></div>
             </div>
-            </div>
+          </div>
 
           <div class="form-group">
             <label>Số tín chỉ</label>
@@ -772,14 +862,14 @@
           <div class="form-group">
             <label>Điểm chữ</label>
             <div class="grade-grid">
-              <button class="grade-btn" data-grade="A" onclick="selectGrade(this)">A</button>
+              <button class="grade-btn" data-grade="A"  onclick="selectGrade(this)">A</button>
               <button class="grade-btn" data-grade="B+" onclick="selectGrade(this)">B+</button>
-              <button class="grade-btn" data-grade="B" onclick="selectGrade(this)">B</button>
+              <button class="grade-btn" data-grade="B"  onclick="selectGrade(this)">B</button>
               <button class="grade-btn" data-grade="C+" onclick="selectGrade(this)">C+</button>
-              <button class="grade-btn" data-grade="C" onclick="selectGrade(this)">C</button>
+              <button class="grade-btn" data-grade="C"  onclick="selectGrade(this)">C</button>
               <button class="grade-btn" data-grade="D+" onclick="selectGrade(this)">D+</button>
-              <button class="grade-btn" data-grade="D" onclick="selectGrade(this)">D</button>
-              <button class="grade-btn" data-grade="F" onclick="selectGrade(this)">F</button>
+              <button class="grade-btn" data-grade="D"  onclick="selectGrade(this)">D</button>
+              <button class="grade-btn" data-grade="F"  onclick="selectGrade(this)">F</button>
             </div>
           </div>
 
@@ -841,26 +931,20 @@
 // =============================================
 // TẢI DATABASE HỌC PHẦN TỪ FILE JSON
 // =============================================
-let DB_ENTRIES = []; // Khởi tạo mảng rỗng
+let DB_ENTRIES = [];
 
 async function loadCoursesData() {
   try {
-    // Gọi file courses.json nằm cùng thư mục
-    const response = await fetch('./courses.json'); 
-    
+    const response = await fetch('./courses.json');
     if (!response.ok) throw new Error('Không tìm thấy file JSON');
-    
     const rawData = await response.json();
-
-    // Chuyển đổi dữ liệu cho khớp với logic tìm kiếm của bạn
     DB_ENTRIES = rawData.map(item => ({
       code: item.MaHocPhan,
       ten: item.TenHocPhan,
-      tinChi: parseInt(item.SoTinChi), // Đảm bảo tín chỉ là số nguyên
+      tinChi: parseInt(item.SoTinChi),
       vien: item.VienQuanLy,
       searchKey: (item.MaHocPhan + ' ' + item.TenHocPhan).toLowerCase()
     }));
-
     console.log(`Đã tải thành công ${DB_ENTRIES.length} học phần!`);
   } catch (error) {
     console.error("Lỗi khi tải dữ liệu:", error);
@@ -868,7 +952,6 @@ async function loadCoursesData() {
   }
 }
 
-// Chạy hàm tải dữ liệu ngay khi web vừa mở lên
 loadCoursesData();
 
 // =============================================
@@ -877,7 +960,7 @@ loadCoursesData();
 let courses = JSON.parse(localStorage.getItem('hust_cpa_v2') || '[]');
 let selectedGrade = null;
 
-const GRADE_MAP = { A:4.0, 'B+':3.5, B:3.0, 'C+':2.5, C:2.0, 'D+':1.5, D:1.0, F:0.0 };
+const GRADE_MAP   = { A:4.0, 'B+':3.5, B:3.0, 'C+':2.5, C:2.0, 'D+':1.5, D:1.0, F:0.0 };
 const GRADE_CLASS = { A:'g-a', 'B+':'g-b+', B:'g-b', 'C+':'g-c+', C:'g-c', 'D+':'g-d+', D:'g-d', F:'g-f' };
 
 // =============================================
@@ -886,72 +969,49 @@ const GRADE_CLASS = { A:'g-a', 'B+':'g-b+', B:'g-b', 'C+':'g-c+', C:'g-c', 'D+':
 function onCodeInput() {
   const q = document.getElementById('inputCode').value.trim().toUpperCase();
   const list = document.getElementById('acList');
-
   if (q.length < 2) { list.classList.remove('show'); return; }
-
   const results = DB_ENTRIES.filter(e =>
     e.searchKey.includes(q.toLowerCase()) || e.code.startsWith(q)
   ).slice(0, 8);
-
-  if (results.length === 0) { list.classList.remove('show'); return; }
-
+  if (!results.length) { list.classList.remove('show'); return; }
   list.innerHTML = results.map(r => `
     <div class="ac-item" onclick="selectCourse('${r.code}')">
       <span class="ac-code">${r.code}</span>
       <span class="ac-name">${r.ten}</span>
       <span class="ac-credits">${r.tinChi}TC</span>
-    </div>
-  `).join('');
-
+    </div>`).join('');
   list.classList.add('show');
 }
+
 function onNameInput() {
   const q = document.getElementById('inputName').value.trim().toLowerCase();
   const list = document.getElementById('acListName');
-
-  // Khởi động tìm kiếm nếu gõ từ 2 ký tự trở lên
   if (q.length < 2) { list.classList.remove('show'); return; }
-
-  // Lọc dữ liệu: Tìm các môn học có tên chứa từ khóa vừa nhập
-  const results = DB_ENTRIES.filter(e =>
-    e.ten.toLowerCase().includes(q)
-  ).slice(0, 8); // Chỉ hiện tối đa 8 kết quả cho gọn
-
-  if (results.length === 0) { list.classList.remove('show'); return; }
-
-  // Hiển thị danh sách gợi ý
+  const results = DB_ENTRIES.filter(e => e.ten.toLowerCase().includes(q)).slice(0, 8);
+  if (!results.length) { list.classList.remove('show'); return; }
   list.innerHTML = results.map(r => `
     <div class="ac-item" onclick="selectCourse('${r.code}')">
       <span class="ac-code">${r.code}</span>
       <span class="ac-name">${r.ten}</span>
       <span class="ac-credits">${r.tinChi}TC</span>
-    </div>
-  `).join('');
-
+    </div>`).join('');
   list.classList.add('show');
 }
+
 function selectCourse(code) {
   const info = DB_ENTRIES.find(c => c.code === code);
   if (!info) return;
-  
   document.getElementById('inputCode').value = info.code;
   document.getElementById('inputName').value = info.ten;
   document.getElementById('inputCredits').value = info.tinChi;
-  
-  // Ẩn cả 2 bảng gợi ý sau khi chọn
   document.getElementById('acList').classList.remove('show');
   document.getElementById('acListName').classList.remove('show');
 }
 
 document.addEventListener('click', e => {
   if (!e.target.closest('.input-wrapper')) {
-    // Ẩn bảng gợi ý mã môn
-    let listCode = document.getElementById('acList');
-    if (listCode) listCode.classList.remove('show');
-
-    // Ẩn bảng gợi ý tên môn
-    let listName = document.getElementById('acListName');
-    if (listName) listName.classList.remove('show');
+    document.getElementById('acList').classList.remove('show');
+    document.getElementById('acListName').classList.remove('show');
   }
 });
 
@@ -968,16 +1028,15 @@ function selectGrade(btn) {
 // ADD COURSE
 // =============================================
 function addCourse() {
-  const code = document.getElementById('inputCode').value.trim().toUpperCase() || '---';
-  const name = document.getElementById('inputName').value.trim();
+  const code    = document.getElementById('inputCode').value.trim().toUpperCase() || '---';
+  const name    = document.getElementById('inputName').value.trim();
   const credits = parseFloat(document.getElementById('inputCredits').value);
-  const grade = selectedGrade;
+  const grade   = selectedGrade;
 
-  if (!name) return toast('Vui lòng nhập tên môn học', 'error');
-  if (isNaN(credits) || credits <= 0) return toast('Vui lòng nhập số tín chỉ hợp lệ', 'error');
-  if (!grade) return toast('Vui lòng chọn điểm chữ', 'error');
+  if (!name)                           return toast('Vui lòng nhập tên môn học', 'error');
+  if (isNaN(credits) || credits <= 0)  return toast('Vui lòng nhập số tín chỉ hợp lệ', 'error');
+  if (!grade)                          return toast('Vui lòng chọn điểm chữ', 'error');
 
-  // Kiểm tra trùng
   const dup = courses.find(c =>
     (code !== '---' && c.code === code) ||
     c.name.toLowerCase() === name.toLowerCase()
@@ -987,7 +1046,6 @@ function addCourse() {
   courses.push({ code, name, credits, grade, gpa4: GRADE_MAP[grade] });
   save();
 
-  // Reset form
   document.getElementById('inputCode').value = '';
   document.getElementById('inputName').value = '';
   document.getElementById('inputCredits').value = '';
@@ -1018,13 +1076,7 @@ function save() {
 // RENDER
 // =============================================
 function renderTable() {
-  const q = document.getElementById('filterInput').value.toLowerCase();
-  const filtered = courses.filter((c, i) => {
-    c._idx = i;
-    return !q || c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q);
-  }).map((c, _) => ({...c}));
-
-  // Re-index for delete
+  const q     = document.getElementById('filterInput').value.toLowerCase();
   const tbody = document.getElementById('tableBody');
   const empty = document.getElementById('emptyState');
 
@@ -1054,45 +1106,40 @@ function renderStats() {
   let totalCredits = 0, weightedSum = 0;
   courses.forEach(c => {
     totalCredits += c.credits;
-    weightedSum += c.gpa4 * c.credits;
+    weightedSum  += c.gpa4 * c.credits;
   });
 
   const cpa = totalCredits === 0 ? 0 : weightedSum / totalCredits;
 
-  document.getElementById('statCPA').textContent = cpa.toFixed(2);
+  document.getElementById('statCPA').textContent     = cpa.toFixed(2);
   document.getElementById('statCredits').textContent = totalCredits;
   document.getElementById('statCourses').textContent = courses.length;
 
-  // Rank
-  const pct = (cpa / 4.0) * 100;
-  document.getElementById('rankBar').style.width = pct + '%';
+  document.getElementById('rankBar').style.width = (cpa / 4.0 * 100) + '%';
 
   let rank, color;
-  if (cpa >= 3.6)      { rank = '🏆 Xuất sắc'; color = '#fbbf24'; }
-  else if (cpa >= 3.2) { rank = '⭐ Giỏi'; color = '#4ade80'; }
-  else if (cpa >= 2.5) { rank = '✓ Khá'; color = '#60a5fa'; }
-  else if (cpa >= 2.0) { rank = '○ Trung bình'; color = '#fb923c'; }
-  else if (cpa > 0)    { rank = '⚠ Yếu'; color = '#f87171'; }
+  if      (cpa >= 3.6) { rank = '🏆 Xuất sắc';    color = '#fbbf24'; }
+  else if (cpa >= 3.2) { rank = '⭐ Giỏi';         color = '#4ade80'; }
+  else if (cpa >= 2.5) { rank = '✓ Khá';           color = '#60a5fa'; }
+  else if (cpa >= 2.0) { rank = '○ Trung bình';    color = '#fb923c'; }
+  else if (cpa  > 0  ) { rank = '⚠ Yếu';           color = '#f87171'; }
   else                 { rank = 'Chưa có dữ liệu'; color = 'var(--text-muted)'; }
 
-  document.getElementById('rankLabel').textContent = rank;
-  document.getElementById('rankLabel').style.color = color;
+  document.getElementById('rankLabel').textContent   = rank;
+  document.getElementById('rankLabel').style.color   = color;
 }
 
-function renderAll() {
-  renderTable();
-  renderStats();
-}
+function renderAll() { renderTable(); renderStats(); }
 
 // =============================================
 // EXPORT / IMPORT
 // =============================================
 function exportJSON() {
-  const data = JSON.stringify(courses, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'hust_cpa_data.json'; a.click();
+  const blob = new Blob([JSON.stringify(courses, null, 2)], { type: 'application/json' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'hust_cpa_data.json';
+  a.click();
   toast('✓ Đã xuất file JSON', 'success');
 }
 
@@ -1106,9 +1153,7 @@ function importJSON(e) {
     try {
       const data = JSON.parse(ev.target.result);
       if (Array.isArray(data)) {
-        courses = data;
-        save();
-        renderAll();
+        courses = data; save(); renderAll();
         toast(`✓ Đã nhập ${data.length} môn học`, 'success');
       } else {
         toast('File JSON không hợp lệ', 'error');
@@ -1120,11 +1165,9 @@ function importJSON(e) {
 }
 
 function clearAll() {
-  if (courses.length === 0) return;
+  if (!courses.length) return;
   if (confirm(`Xóa tất cả ${courses.length} môn học?`)) {
-    courses = [];
-    save();
-    renderAll();
+    courses = []; save(); renderAll();
     toast('Đã xóa tất cả dữ liệu', 'success');
   }
 }
@@ -1133,10 +1176,10 @@ function clearAll() {
 // TOAST
 // =============================================
 let toastTimer;
-function toast(msg, type='') {
-  const el = document.getElementById('toast');
+function toast(msg, type = '') {
+  const el    = document.getElementById('toast');
   el.textContent = msg;
-  el.className = 'toast show ' + type;
+  el.className   = 'toast show ' + type;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
