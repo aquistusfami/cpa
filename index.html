@@ -550,7 +550,7 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
       </div>
       <div class="suggest-list" id="suggestList"></div>
       <div class="suggest-note">
-        💡 Xếp hạng theo <strong>mức tăng CPA / tín chỉ</strong> — môn đứng đầu là lựa chọn hiệu quả nhất. Giả sử bạn học lại và đạt <strong>A (4.0)</strong>.
+        💡 Phần <strong style="color:#4ade80">Cải thiện 1 môn là đủ</strong>: hiển thị điểm tối thiểu cần đạt (không nhất thiết phải A). Phần <strong style="color:var(--text-dim)">Góp phần</strong>: các môn cần kết hợp cùng nhau mới đủ, xếp theo hiệu quả tăng CPA.
       </div>
     </div>
   </div>
@@ -713,9 +713,34 @@ function toast(msg,type='') {
 renderAll();
 
 // ── SUGGESTION ENGINE ──
-let suggestTarget = 'gioi'; // 'gioi' = 3.20, 'xuatsac' = 3.60
+let suggestTarget = 'gioi';
 const TARGETS = { gioi: 3.20, xuatsac: 3.60 };
 const TARGET_LABELS = { gioi: '3.20', xuatsac: '3.60' };
+
+// Thang điểm chữ theo thứ tự tăng dần
+const GRADE_STEPS = [
+  { grade:'F',  val:0.0 },
+  { grade:'D',  val:1.0 },
+  { grade:'D+', val:1.5 },
+  { grade:'C',  val:2.0 },
+  { grade:'C+', val:2.5 },
+  { grade:'B',  val:3.0 },
+  { grade:'B+', val:3.5 },
+  { grade:'A',  val:4.0 },
+];
+
+// Tìm điểm chữ tối thiểu cần đạt để CPA >= target
+// Trả về { grade, val } hoặc null nếu dù lên A cũng không đủ
+function minGradeNeeded(courseIdx, ws, tc, target) {
+  const c = courses[courseIdx];
+  const wsWithout = ws - c.gpa4 * c.credits;
+  for (const step of GRADE_STEPS) {
+    if (step.val <= c.gpa4) continue; // Không cần cải thiện nếu đã bằng/cao hơn
+    const newCpa = (wsWithout + step.val * c.credits) / tc;
+    if (newCpa >= target) return { ...step, newCpa };
+  }
+  return null; // Ngay cả A cũng không đủ (cần cải thiện nhiều môn)
+}
 
 function switchTarget(t) {
   suggestTarget = t;
@@ -732,12 +757,11 @@ function renderSuggest() {
 
   const target = TARGETS[suggestTarget];
 
-  // Current CPA
   let tc=0, ws=0;
   courses.forEach(c=>{ tc+=c.credits; ws+=c.gpa4*c.credits; });
   const cpa = tc===0 ? 0 : ws/tc;
 
-  // Update summary
+  // Update summary cards
   document.getElementById('sumCurrent').textContent = cpa.toFixed(2);
   document.getElementById('sumTarget').textContent  = TARGET_LABELS[suggestTarget];
   const gap = Math.max(0, target - cpa);
@@ -745,7 +769,7 @@ function renderSuggest() {
   sumGap.textContent = gap.toFixed(2);
   sumGap.style.color = gap===0 ? '#4ade80' : '#fb923c';
 
-  // Progress
+  // Progress bar
   const pct = Math.min(100, Math.round((cpa / target) * 100));
   document.getElementById('progressFill').style.width = pct + '%';
   const pctEl = document.getElementById('progressPct');
@@ -754,57 +778,105 @@ function renderSuggest() {
 
   const list = document.getElementById('suggestList');
 
-  // Already reached target
   if (cpa >= target) {
     list.innerHTML = `<div class="suggest-empty"><div class="ei">${suggestTarget==='xuatsac'?'🏆':'⭐'}</div><p>Chúc mừng! Bạn đã đạt <strong>${suggestTarget==='xuatsac'?'Xuất sắc':'Giỏi'}</strong> rồi!</p></div>`;
     return;
   }
 
-  // For each course not already A, simulate replacing with A and measure gain
-  const candidates = courses
-    .map((c, i) => {
-      if (c.gpa4 === 4.0) return null; // Already A, can't improve
-      const newWs = ws - c.gpa4 * c.credits + 4.0 * c.credits;
-      const newCpa = newWs / tc;
-      const gain = newCpa - cpa; // CPA gain from this improvement
-      const gainPerCredit = gain / c.credits; // efficiency
-      return { ...c, i, newCpa, gain, gainPerCredit };
-    })
-    .filter(Boolean)
-    .sort((a, b) => b.gainPerCredit - a.gainPerCredit) // Most efficient first
-    .slice(0, 8); // Top 8
+  const isGold = suggestTarget === 'xuatsac';
 
-  if (!candidates.length) {
+  // Phân loại từng môn
+  const solo   = []; // Cải thiện 1 mình là đủ
+  const partial = []; // Góp phần nhưng chưa đủ một mình
+
+  courses.forEach((c, i) => {
+    if (c.gpa4 === 4.0) return; // Đã A rồi
+
+    const needed = minGradeNeeded(i, ws, tc, target);
+
+    // Tính CPA nếu lên A (để biết mức đóng góp tối đa)
+    const wsWithout = ws - c.gpa4 * c.credits;
+    const maxCpa = (wsWithout + 4.0 * c.credits) / tc;
+    const gain = maxCpa - cpa;
+    const gainPerCredit = gain / c.credits;
+
+    if (needed) {
+      // Môn này một mình đủ để đạt mục tiêu
+      solo.push({ ...c, i, needed, maxCpa, gain, gainPerCredit,
+        targetCpa: needed.newCpa });
+    } else {
+      // Ngay cả lên A cũng chưa đủ — vẫn liệt kê vì đóng góp nhiều
+      partial.push({ ...c, i, maxCpa, gain, gainPerCredit });
+    }
+  });
+
+  // Sắp xếp: solo theo điểm cần thấp nhất (dễ nhất), partial theo gain cao nhất
+  solo.sort((a,b) => a.needed.val - b.needed.val || b.gainPerCredit - a.gainPerCredit);
+  partial.sort((a,b) => b.gainPerCredit - a.gainPerCredit);
+
+  if (!solo.length && !partial.length) {
     list.innerHTML = `<div class="suggest-empty"><div class="ei">📚</div><p>Tất cả môn đều đã đạt A.</p></div>`;
     return;
   }
 
-  const isGold = suggestTarget === 'xuatsac';
+  let html = '';
 
-  list.innerHTML = candidates.map((c, rank) => {
-    const gainStr = '+' + c.gain.toFixed(3);
-    const newCpaStr = c.newCpa.toFixed(2);
-    const reachTarget = c.newCpa >= target;
-    return `
-    <div class="suggest-item">
-      <div class="si-left">
-        <div class="si-name">${rank+1}. ${c.name}</div>
-        <div class="si-meta">
-          <span class="si-code">${c.code}</span>
-          <span class="si-credits">${c.credits} TC</span>
-          <span class="si-arrow">
-            <span class="grade-badge ${GRADE_CLASS[c.grade]||'g-f'}" style="font-size:10px;padding:1px 7px">${c.grade}</span>
-            → A
-          </span>
-          ${reachTarget ? `<span style="font-size:10px;padding:1px 8px;border-radius:99px;background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.3);font-weight:600;">Đạt mục tiêu!</span>` : ''}
-        </div>
-      </div>
-      <div class="si-right">
-        <div class="si-gain${isGold?' gold':''}">${gainStr}</div>
-        <div class="si-new-grade">CPA → ${newCpaStr}</div>
-      </div>
+  if (solo.length) {
+    html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${isGold?'#fbbf24':'#4ade80'};margin-bottom:8px;padding:0 2px;">
+      ✦ Cải thiện 1 môn là đủ đạt mục tiêu
     </div>`;
-  }).join('');
+    html += solo.slice(0,5).map((c, rank) => {
+      const neededGc = GRADE_CLASS[c.needed.grade] || 'g-f';
+      const currentGc = GRADE_CLASS[c.grade] || 'g-f';
+      const alreadyHigher = c.needed.val > c.gpa4;
+      return `<div class="suggest-item" style="border-color:${isGold?'rgba(251,191,36,0.25)':'rgba(74,222,128,0.25)'}">
+        <div class="si-left">
+          <div class="si-name">${rank+1}. ${c.name}</div>
+          <div class="si-meta">
+            <span class="si-code">${c.code}</span>
+            <span class="si-credits">${c.credits} TC</span>
+            <span class="si-arrow">
+              <span class="grade-badge ${currentGc}" style="font-size:10px;padding:1px 7px">${c.grade}</span>
+              →
+              <span class="grade-badge ${neededGc}" style="font-size:10px;padding:1px 7px">${c.needed.grade}</span>
+            </span>
+          </div>
+        </div>
+        <div class="si-right">
+          <div class="si-gain${isGold?' gold':''}" style="font-size:13px">Cần ${c.needed.grade}</div>
+          <div class="si-new-grade">CPA → ${c.needed.newCpa.toFixed(2)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  if (partial.length) {
+    html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin:${solo.length?'16px':'0'}px 0 8px;padding:0 2px;">
+      ○ Góp phần tăng CPA (cần cải thiện thêm nhiều môn)
+    </div>`;
+    html += partial.slice(0,5).map((c, rank) => {
+      const currentGc = GRADE_CLASS[c.grade] || 'g-f';
+      return `<div class="suggest-item">
+        <div class="si-left">
+          <div class="si-name">${rank+1}. ${c.name}</div>
+          <div class="si-meta">
+            <span class="si-code">${c.code}</span>
+            <span class="si-credits">${c.credits} TC</span>
+            <span class="si-arrow">
+              <span class="grade-badge ${currentGc}" style="font-size:10px;padding:1px 7px">${c.grade}</span>
+              → A
+            </span>
+          </div>
+        </div>
+        <div class="si-right">
+          <div class="si-gain" style="font-size:13px;color:var(--text-dim)">+${c.gain.toFixed(3)}</div>
+          <div class="si-new-grade">CPA → ${c.maxCpa.toFixed(2)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  list.innerHTML = html;
 }
 
 
