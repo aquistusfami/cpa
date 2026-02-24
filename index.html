@@ -216,14 +216,23 @@
   }
 
   /* ============================================
-     PANEL — KHÔNG dùng overflow:hidden để tránh
-     cắt mất autocomplete dropdown
+     PANEL — KHÔNG dùng overflow:hidden
+     contain:paint giúp giữ border-radius đẹp
+     mà không clip autocomplete dropdown
   ============================================ */
   .panel {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    /* overflow: hidden đã bị XÓA — đây là nguyên nhân gốc rễ */
+    contain: paint;
+  }
+
+  /* Cho phép autocomplete thoát ra khỏi panel */
+  .panel .input-wrapper {
+    contain: none;
+  }
+  .panel .autocomplete-list {
+    contain: none;
   }
 
   .panel-header {
@@ -681,7 +690,7 @@
     }
 
     .container {
-      padding: 16px 12px 80px;
+      padding: 16px 10px 80px;
     }
 
     /* Stats: 2 cột trên mobile, cột thứ 3 chiếm full */
@@ -706,14 +715,24 @@
       padding: 12px 14px;
     }
 
-    /* Grade buttons */
+    /* Panel body padding nhỏ lại để grade grid có đủ chỗ */
+    .panel-body {
+      padding: 14px 12px;
+    }
+
+    /* Grade grid: đảm bảo không tràn */
     .grade-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 5px;
+      width: 100%;
     }
 
     .grade-btn {
-      padding: 11px 2px;
+      padding: 11px 0;
       font-size: 13px;
+      min-width: 0;
+      width: 100%;
     }
 
     .btn-add {
@@ -731,7 +750,7 @@
     }
 
     td, thead th {
-      padding: 10px 10px;
+      padding: 10px 8px;
       font-size: 12px;
     }
 
@@ -744,7 +763,7 @@
     .action-row {
       flex-wrap: wrap;
       gap: 8px;
-      padding: 12px 12px;
+      padding: 12px;
     }
 
     .btn-sec {
@@ -762,25 +781,28 @@
       padding: 12px;
     }
 
-    /* Panel body */
-    .panel-body {
-      padding: 16px;
-    }
-
     /* Toast căn giữa */
     .toast {
-      left: 12px;
-      right: 12px;
+      left: 10px;
+      right: 10px;
       bottom: 16px;
       text-align: center;
     }
   }
 
   /* ============================================
-     RESPONSIVE — NHỎ HƠN (≤ 380px — iPhone SE)
+     RESPONSIVE — NHỎ HƠN (≤ 400px — iPhone SE)
   ============================================ */
-  @media (max-width: 380px) {
+  @media (max-width: 400px) {
     h1 { font-size: 22px; }
+
+    .container {
+      padding: 12px 8px 80px;
+    }
+
+    .panel-body {
+      padding: 12px 10px;
+    }
 
     .stats-row {
       grid-template-columns: 1fr;
@@ -790,9 +812,13 @@
       grid-column: 1;
     }
 
+    .grade-grid {
+      gap: 4px;
+    }
+
     .grade-btn {
       font-size: 12px;
-      padding: 10px 1px;
+      padding: 10px 0;
     }
   }
 </style>
