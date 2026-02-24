@@ -669,6 +669,42 @@
     .stat-card { padding: 16px !important; }
     .stat-value { font-size: 28px !important; }
   }
+  @media (max-width: 768px) {
+    .grade-grid {
+      width: 100% !important;
+      gap: 5px !important; /* Thu hẹp khoảng cách giữa các nút 1 xíu */
+    }
+    
+    .grade-btn {
+      padding: 12px 0px !important; /* Ép lề ngang về 0 để nút không bị phình to */
+      min-width: 0 !important; /* Lệnh sinh tử: Ép nút phải thu nhỏ theo đúng tỷ lệ khung */
+      font-size: 13px !important;
+      word-wrap: break-word !important;
+    }
+  }
+  @media (max-width: 768px) {
+    /* Khóa chặt khung chứa bên ngoài, không cho phình */
+    .panel {
+      width: 100% !important;
+      max-width: 100vw !important;
+      overflow: hidden !important; 
+    }
+    
+    /* Ép khu vực bảng phải tạo thanh cuộn ngang nội bộ */
+    .table-wrap {
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important; /* Vuốt mượt trên iPhone */
+      display: block !important; /* Lệnh sinh tử cho Safari: tách biệt bảng khỏi lưới */
+    }
+    
+    /* Cho bảng giữ form đẹp, người dùng sẽ vuốt ngang để xem điểm/nút xóa */
+    table {
+      width: 100% !important;
+      min-width: 450px !important; /* Cố định chiều rộng tối thiểu để chữ không bị bóp méo */
+    }
+  }
 </style>
 </head>
 <body>
