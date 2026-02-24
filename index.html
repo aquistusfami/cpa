@@ -7,314 +7,266 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --red: #C41230; --red-dark: #8B0000; --red-light: #E8293A;
-  --bg: #0B0D0F; --surface: #111417; --surface2: #181B1F; --surface3: #1E2226;
-  --border: #272B30; --border2: #323840;
-  --text: #E8EAF0; --text-muted: #6B7280; --text-dim: #9CA3AF;
-  --radius: 10px;
+  --red:#C41230; --red-dark:#8B0000; --red-light:#E8293A;
+  --bg:#0B0D0F; --surface:#111417; --surface2:#181B1F; --surface3:#1E2226;
+  --border:#272B30; --border2:#323840;
+  --text:#E8EAF0; --text-muted:#6B7280; --text-dim:#9CA3AF;
+  --radius:10px;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;overflow-x:hidden;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.6;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* HEADER */
+header{position:relative;padding:48px 24px 36px;text-align:center;border-bottom:1px solid var(--border);overflow:hidden;}
+header::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:600px;height:200px;background:radial-gradient(ellipse,rgba(196,18,48,0.25) 0%,transparent 70%);pointer-events:none;}
+.header-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(196,18,48,0.12);border:1px solid rgba(196,18,48,0.3);border-radius:99px;padding:5px 14px;font-size:11px;font-weight:600;letter-spacing:0.1em;color:var(--red-light);text-transform:uppercase;margin-bottom:20px;}
+.header-badge::before{content:'';width:6px;height:6px;background:var(--red-light);border-radius:50%;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+h1{font-size:clamp(24px,5vw,48px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;}
+h1 span{color:var(--red);}
+header p{margin-top:10px;color:var(--text-muted);font-size:14px;}
 
-html, body { width: 100%; overflow-x: hidden; }
-body {
-  font-family: 'Space Grotesk', sans-serif;
-  background: var(--bg); color: var(--text); min-height: 100vh;
+/* CONTAINER */
+.container{max-width:1080px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:1;}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
+.stat-card.primary{border-color:rgba(196,18,48,0.4);background:linear-gradient(135deg,rgba(196,18,48,0.08),var(--surface));}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--border);}
+.stat-card.primary::after{background:linear-gradient(90deg,var(--red),transparent);}
+.stat-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;}
+.stat-value{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:500;color:var(--text);line-height:1;}
+.stat-card.primary .stat-value{color:var(--red-light);}
+.rank-bar{height:4px;border-radius:2px;margin-top:10px;background:var(--border);overflow:hidden;}
+.rank-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--red-dark),var(--red-light));transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+.rank-label{margin-top:6px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;}
+
+/* MAIN GRID */
+.main-grid{display:grid;grid-template-columns:380px 1fr;gap:20px;align-items:start;}
+.main-grid>div{min-width:0;}
+
+/* PANEL */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}
+.panel-table{overflow:hidden;}
+.panel-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:8px;}
+.panel-header svg{color:var(--red);}
+.panel-body{padding:20px;}
+
+/* FORM */
+.form-group{margin-bottom:14px;}
+label{display:block;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.input-wrapper{position:relative;}
+input[type="text"],input[type="number"],select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;padding:11px 14px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.15s,background 0.15s;-webkit-appearance:none;appearance:none;}
+input:focus,select:focus{border-color:rgba(196,18,48,0.6);background:var(--surface3);}
+input::placeholder{color:var(--text-muted);}
+select option{background:#1a1d22;}
+
+/* AUTOCOMPLETE */
+.autocomplete-list{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface3);border:1px solid var(--border2);border-radius:7px;max-height:220px;overflow-y:auto;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,0.6);}
+.autocomplete-list.show{display:block;}
+.ac-item{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--border);transition:background 0.1s;}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:hover{background:rgba(196,18,48,0.08);}
+.ac-code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--red-light);font-weight:500;flex-shrink:0;}
+.ac-name{font-size:13px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ac-credits{font-size:11px;color:var(--text-muted);flex-shrink:0;background:var(--border);padding:2px 6px;border-radius:4px;}
+
+/* GRADE GRID */
+.grade-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;}
+.grade-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:9px 4px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all 0.15s;text-align:center;min-width:0;overflow:hidden;}
+.grade-btn:hover{border-color:var(--red);color:var(--text);}
+.grade-btn.selected{background:var(--red);border-color:var(--red);color:white;}
+.grade-btn[data-grade="A+"].selected{background:#059669;border-color:#059669;}
+.grade-btn[data-grade="A"].selected{background:#16a34a;border-color:#16a34a;}
+.grade-btn[data-grade="B+"].selected{background:#2563eb;border-color:#2563eb;}
+.grade-btn[data-grade="B"].selected{background:#0891b2;border-color:#0891b2;}
+.grade-btn[data-grade="C+"].selected{background:#d97706;border-color:#d97706;}
+.grade-btn[data-grade="C"].selected{background:#ea580c;border-color:#ea580c;}
+.grade-btn[data-grade="D+"].selected{background:#dc2626;border-color:#dc2626;}
+.grade-btn[data-grade="D"].selected{background:#9f1239;border-color:#9f1239;}
+.grade-btn[data-grade="F"].selected{background:#374151;border-color:#374151;}
+
+/* ADD BTN */
+.btn-add{width:100%;padding:13px;background:var(--red);border:none;border-radius:7px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:white;cursor:pointer;letter-spacing:0.03em;transition:background 0.15s,transform 0.1s;margin-top:4px;}
+.btn-add:hover{background:var(--red-light);}
+.btn-add:active{transform:scale(0.99);}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:8px;padding:14px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.filter-input{flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--text);outline:none;}
+.filter-input:focus{border-color:rgba(196,18,48,0.4);}
+.filter-input::placeholder{color:var(--text-muted);}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;display:block;width:100%;}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:12px 16px;text-align:left;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap;}
+thead th.center{text-align:center;}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:rgba(255,255,255,0.02);}
+td{padding:12px 16px;font-size:13px;vertical-align:middle;}
+.td-code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-muted);white-space:nowrap;}
+.td-name{color:var(--text);}
+.td-center{text-align:center;}
+.td-credits{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-dim);}
+
+/* GRADE BADGE */
+.grade-badge{display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:700;letter-spacing:0.03em;}
+.g-ap{background:rgba(5,150,105,0.18);color:#34d399;}
+.g-a {background:rgba(22,163,74,0.15);color:#4ade80;}
+.g-bp{background:rgba(37,99,235,0.15);color:#60a5fa;}
+.g-b {background:rgba(8,145,178,0.15);color:#22d3ee;}
+.g-cp{background:rgba(217,119,6,0.15);color:#fbbf24;}
+.g-c {background:rgba(234,88,12,0.15);color:#fb923c;}
+.g-dp{background:rgba(220,38,38,0.15);color:#f87171;}
+.g-d {background:rgba(159,18,57,0.15);color:#fb7185;}
+.g-f {background:rgba(55,65,81,0.2);color:#6b7280;}
+.d4-val{font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center;}
+
+/* ACTION BUTTONS IN TABLE */
+.btn-del,.btn-edit{background:none;border:1px solid transparent;border-radius:6px;padding:5px 8px;cursor:pointer;font-size:13px;transition:all 0.15s;color:var(--text-muted);}
+.btn-del:hover{background:rgba(220,38,38,0.12);border-color:rgba(220,38,38,0.3);color:#f87171;}
+.btn-edit:hover{background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:#60a5fa;}
+.td-actions{text-align:center;white-space:nowrap;}
+
+/* EMPTY STATE */
+.empty-state{padding:60px 20px;text-align:center;color:var(--text-muted);}
+.empty-icon{font-size:36px;margin-bottom:12px;opacity:0.4;}
+.empty-state p{font-size:14px;}
+
+/* ACTION ROW */
+.action-row{display:flex;gap:8px;padding:12px 20px;border-top:1px solid var(--border);}
+.btn-sec{flex:1;padding:9px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;text-transform:uppercase;}
+.btn-sec:hover{background:var(--surface3);border-color:var(--red);color:var(--text);}
+
+/* INFO HINT */
+.info-hint{font-size:11px;color:var(--text-muted);margin-top:8px;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:6px;border-left:2px solid var(--border2);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface3);border:1px solid var(--border2);border-radius:8px;padding:12px 18px;font-size:13px;font-weight:500;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:10000;transform:translateY(80px);opacity:0;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.error{border-color:rgba(220,38,38,0.5);color:#f87171;}
+.toast.success{border-color:rgba(22,163,74,0.5);color:#4ade80;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--surface);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+
+/* EDIT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:20000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.modal-overlay.show{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);width:100%;max-width:380px;transform:scale(0.96) translateY(10px);transition:transform 0.2s;}
+.modal-overlay.show .modal{transform:scale(1) translateY(0);}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);}
+.modal-close{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:20px;line-height:1;padding:0 4px;transition:color 0.15s;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:20px;}
+.modal-course-info{font-size:13px;color:var(--text-dim);margin-bottom:4px;}
+.modal-course-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:18px;line-height:1.4;}
+.modal-section-label{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+.modal-grade-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:20px;}
+.mgb{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:10px 4px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all 0.15s;text-align:center;min-width:0;}
+.mgb:hover{border-color:var(--red);color:var(--text);}
+.mgb.sel{color:white;}
+.mgb[data-g="A+"].sel{background:#059669;border-color:#059669;}
+.mgb[data-g="A"].sel {background:#16a34a;border-color:#16a34a;}
+.mgb[data-g="B+"].sel{background:#2563eb;border-color:#2563eb;}
+.mgb[data-g="B"].sel {background:#0891b2;border-color:#0891b2;}
+.mgb[data-g="C+"].sel{background:#d97706;border-color:#d97706;}
+.mgb[data-g="C"].sel {background:#ea580c;border-color:#ea580c;}
+.mgb[data-g="D+"].sel{background:#dc2626;border-color:#dc2626;}
+.mgb[data-g="D"].sel {background:#9f1239;border-color:#9f1239;}
+.mgb[data-g="F"].sel {background:#374151;border-color:#374151;}
+.modal-footer{display:flex;gap:8px;}
+.btn-save{flex:1;padding:12px;background:var(--red);border:none;border-radius:7px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:white;cursor:pointer;transition:background 0.15s;}
+.btn-save:hover{background:var(--red-light);}
+.btn-cancel{padding:12px 18px;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all 0.15s;}
+.btn-cancel:hover{background:var(--surface3);color:var(--text);}
+
+/* SUGGEST PANEL */
+.suggest-panel{margin-top:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.suggest-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.suggest-header-left{display:flex;align-items:center;gap:8px;}
+.suggest-header-left svg{color:#fbbf24;}
+.suggest-title{font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);}
+.suggest-tabs{display:flex;gap:6px;}
+.suggest-tab{padding:5px 14px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface2);color:var(--text-muted);transition:all 0.15s;white-space:nowrap;}
+.suggest-tab.active-gioi{background:rgba(74,222,128,0.12);border-color:rgba(74,222,128,0.4);color:#4ade80;}
+.suggest-tab.active-xuatsac{background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.4);color:#fbbf24;}
+.suggest-body{padding:20px;}
+.suggest-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.sum-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 12px;text-align:center;}
+.sum-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.sum-val{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:500;}
+.progress-wrap{margin-bottom:18px;}
+.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.progress-label span{font-size:12px;color:var(--text-muted);}
+.progress-label strong{font-size:13px;font-weight:700;}
+.progress-track{height:8px;border-radius:4px;background:var(--border);overflow:hidden;}
+.progress-fill{height:100%;border-radius:4px;transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+.progress-fill.gioi{background:linear-gradient(90deg,#16a34a,#4ade80);}
+.progress-fill.xuatsac{background:linear-gradient(90deg,#b45309,#fbbf24);}
+.suggest-list{display:flex;flex-direction:column;gap:8px;}
+.suggest-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;transition:border-color 0.15s;}
+.suggest-item:hover{border-color:var(--border2);}
+.si-name{font-size:13px;color:var(--text);margin-bottom:4px;font-weight:500;}
+.si-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.si-code{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-muted);}
+.si-credits{font-size:11px;color:var(--text-muted);background:var(--border);padding:1px 6px;border-radius:4px;}
+.si-arrow{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px;}
+.si-right{text-align:right;}
+.si-gain{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:#4ade80;white-space:nowrap;}
+.si-gain.gold{color:#fbbf24;}
+.si-new-grade{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.suggest-empty{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:14px;}
+.suggest-empty .ei{font-size:32px;margin-bottom:10px;opacity:0.5;}
+.suggest-note{margin-top:14px;padding:10px 14px;background:rgba(255,255,255,0.02);border-radius:6px;border-left:2px solid var(--border2);font-size:11px;color:var(--text-muted);line-height:1.6;}
+
+/* RESPONSIVE */
+@media(max-width:900px){.main-grid{grid-template-columns:1fr;}}
+@media(max-width:600px){
+  header{padding:28px 16px 20px;}
+  header p{font-size:12px;}
+  .container{padding:16px 12px 80px;}
+  .stats-row{grid-template-columns:1fr 1fr;gap:10px;}
+  .stats-row .stat-card:nth-child(3){grid-column:1/-1;}
+  .stat-card{padding:14px;}
+  .stat-value{font-size:26px;}
+  input[type="text"],input[type="number"],select,.filter-input{font-size:16px;padding:12px 14px;}
+  .panel-body{padding:16px 14px;}
+  .grade-grid{gap:5px;}
+  .grade-btn{padding:10px 0;font-size:13px;}
+  .btn-add{padding:14px;font-size:14px;}
+  table{min-width:320px;}
+  td,thead th{padding:9px 8px;font-size:12px;}
+  .action-row{flex-wrap:wrap;gap:8px;padding:12px 14px;}
+  .btn-sec{flex:1 1 calc(50% - 4px);padding:10px 6px;font-size:11px;}
+  .btn-sec:last-child{flex:1 1 100%;}
+  .filter-bar{padding:12px 14px;}
+  .toast{left:12px;right:12px;bottom:16px;text-align:center;}
+  .suggest-summary{grid-template-columns:1fr 1fr;}
+  .suggest-summary .sum-card:last-child{grid-column:1/-1;}
+  .suggest-tabs{gap:4px;}
+  .suggest-tab{padding:4px 10px;font-size:11px;}
+  .suggest-body{padding:14px 12px;}
+  .suggest-header{padding:12px 14px;}
+  .modal-grade-grid{gap:5px;}
+  .mgb{padding:10px 0;font-size:13px;}
 }
-body::before {
-  content:''; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.6;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-}
-
-/* ── HEADER ── */
-header {
-  position:relative; padding:48px 24px 36px;
-  text-align:center; border-bottom:1px solid var(--border); overflow:hidden;
-}
-header::before {
-  content:''; position:absolute; top:-60px; left:50%; transform:translateX(-50%);
-  width:600px; height:200px;
-  background:radial-gradient(ellipse,rgba(196,18,48,0.25) 0%,transparent 70%);
-  pointer-events:none;
-}
-.header-badge {
-  display:inline-flex; align-items:center; gap:8px;
-  background:rgba(196,18,48,0.12); border:1px solid rgba(196,18,48,0.3);
-  border-radius:99px; padding:5px 14px; font-size:11px; font-weight:600;
-  letter-spacing:0.1em; color:var(--red-light); text-transform:uppercase; margin-bottom:20px;
-}
-.header-badge::before {
-  content:''; width:6px; height:6px; background:var(--red-light);
-  border-radius:50%; animation:pulse 2s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
-h1 { font-size:clamp(24px,5vw,48px); font-weight:700; letter-spacing:-0.02em; line-height:1.1; }
-h1 span { color:var(--red); }
-header p { margin-top:10px; color:var(--text-muted); font-size:14px; }
-
-/* ── CONTAINER ── */
-.container { max-width:1080px; margin:0 auto; padding:32px 24px 80px; position:relative; z-index:1; }
-
-/* ── STATS ── */
-.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px; }
-.stat-card {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:var(--radius); padding:20px; position:relative; overflow:hidden;
-}
-.stat-card.primary { border-color:rgba(196,18,48,0.4); background:linear-gradient(135deg,rgba(196,18,48,0.08),var(--surface)); }
-.stat-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--border); }
-.stat-card.primary::after { background:linear-gradient(90deg,var(--red),transparent); }
-.stat-label { font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px; }
-.stat-value { font-family:'IBM Plex Mono',monospace; font-size:32px; font-weight:500; color:var(--text); line-height:1; }
-.stat-card.primary .stat-value { color:var(--red-light); }
-.rank-bar { height:4px; border-radius:2px; margin-top:10px; background:var(--border); overflow:hidden; }
-.rank-bar-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--red-dark),var(--red-light)); transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
-.rank-label { margin-top:6px; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; }
-
-/* ── MAIN GRID ── */
-.main-grid { display:grid; grid-template-columns:380px 1fr; gap:20px; align-items:start; }
-.main-grid > div { min-width:0; }
-
-/* ── PANEL ── */
-.panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); }
-.panel-table { overflow:hidden; }
-.panel-header {
-  padding:16px 20px; border-bottom:1px solid var(--border);
-  font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
-  color:var(--text-muted); display:flex; align-items:center; gap:8px;
-}
-.panel-header svg { color:var(--red); }
-.panel-body { padding:20px; }
-
-/* ── FORM ── */
-.form-group { margin-bottom:14px; }
-label { display:block; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
-.input-wrapper { position:relative; }
-input[type="text"], input[type="number"], select {
-  width:100%; background:var(--surface2); border:1px solid var(--border2);
-  border-radius:7px; padding:11px 14px; font-family:'Space Grotesk',sans-serif;
-  font-size:14px; color:var(--text); outline:none;
-  transition:border-color 0.15s,background 0.15s;
-  -webkit-appearance:none; appearance:none;
-}
-input:focus, select:focus { border-color:rgba(196,18,48,0.6); background:var(--surface3); }
-input::placeholder { color:var(--text-muted); }
-select option { background:#1a1d22; }
-
-/* ── AUTOCOMPLETE ── */
-.autocomplete-list {
-  position:absolute; top:calc(100% + 4px); left:0; right:0;
-  background:var(--surface3); border:1px solid var(--border2); border-radius:7px;
-  max-height:220px; overflow-y:auto; z-index:9999;
-  display:none; box-shadow:0 8px 24px rgba(0,0,0,0.6);
-}
-.autocomplete-list.show { display:block; }
-.ac-item { padding:10px 14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:8px; border-bottom:1px solid var(--border); transition:background 0.1s; }
-.ac-item:last-child { border-bottom:none; }
-.ac-item:hover { background:rgba(196,18,48,0.08); }
-.ac-code { font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--red-light); font-weight:500; flex-shrink:0; }
-.ac-name { font-size:13px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.ac-credits { font-size:11px; color:var(--text-muted); flex-shrink:0; background:var(--border); padding:2px 6px; border-radius:4px; }
-
-/* ── GRADE GRID (3 cột, 9 nút) ── */
-.grade-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:6px; }
-.grade-btn {
-  background:var(--surface2); border:1px solid var(--border2); border-radius:6px;
-  padding:9px 4px; font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600;
-  color:var(--text-dim); cursor:pointer; transition:all 0.15s; text-align:center;
-  min-width:0; overflow:hidden;
-}
-.grade-btn:hover { border-color:var(--red); color:var(--text); }
-.grade-btn.selected { background:var(--red); border-color:var(--red); color:white; }
-.grade-btn[data-grade="A+"].selected { background:#059669; border-color:#059669; }
-.grade-btn[data-grade="A"].selected  { background:#16a34a; border-color:#16a34a; }
-.grade-btn[data-grade="B+"].selected { background:#2563eb; border-color:#2563eb; }
-.grade-btn[data-grade="B"].selected  { background:#0891b2; border-color:#0891b2; }
-.grade-btn[data-grade="C+"].selected { background:#d97706; border-color:#d97706; }
-.grade-btn[data-grade="C"].selected  { background:#ea580c; border-color:#ea580c; }
-.grade-btn[data-grade="D+"].selected { background:#dc2626; border-color:#dc2626; }
-.grade-btn[data-grade="D"].selected  { background:#9f1239; border-color:#9f1239; }
-.grade-btn[data-grade="F"].selected  { background:#374151; border-color:#374151; }
-
-/* ── ADD BTN ── */
-.btn-add {
-  width:100%; padding:13px; background:var(--red); border:none; border-radius:7px;
-  font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:700; color:white;
-  cursor:pointer; letter-spacing:0.03em; transition:background 0.15s,transform 0.1s; margin-top:4px;
-}
-.btn-add:hover { background:var(--red-light); }
-.btn-add:active { transform:scale(0.99); }
-
-/* ── FILTER BAR ── */
-.filter-bar { display:flex; gap:8px; padding:14px 20px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
-.filter-input {
-  flex:1; min-width:140px; background:var(--surface2); border:1px solid var(--border2);
-  border-radius:6px; padding:8px 12px; font-family:'Space Grotesk',sans-serif;
-  font-size:13px; color:var(--text); outline:none;
-}
-.filter-input:focus { border-color:rgba(196,18,48,0.4); }
-.filter-input::placeholder { color:var(--text-muted); }
-
-/* ── TABLE ── */
-.table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; display:block; width:100%; }
-table { width:100%; border-collapse:collapse; }
-thead th {
-  padding:12px 16px; text-align:left; font-size:10px; font-weight:700;
-  letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted);
-  background:var(--surface2); border-bottom:1px solid var(--border); white-space:nowrap;
-}
-thead th.center { text-align:center; }
-tbody tr { border-bottom:1px solid var(--border); transition:background 0.1s; }
-tbody tr:last-child { border-bottom:none; }
-tbody tr:hover { background:rgba(255,255,255,0.02); }
-td { padding:12px 16px; font-size:13px; vertical-align:middle; }
-.td-code { font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-muted); white-space:nowrap; }
-.td-name { color:var(--text); }
-.td-center { text-align:center; }
-.td-credits { text-align:center; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--text-dim); }
-
-/* ── GRADE BADGE ── */
-.grade-badge { display:inline-block; padding:3px 10px; border-radius:5px; font-size:12px; font-weight:700; letter-spacing:0.03em; }
-.g-a\+ { background:rgba(5,150,105,0.18);  color:#34d399; }
-.g-a   { background:rgba(22,163,74,0.15);  color:#4ade80; }
-.g-b\+ { background:rgba(37,99,235,0.15);  color:#60a5fa; }
-.g-b   { background:rgba(8,145,178,0.15);  color:#22d3ee; }
-.g-c\+ { background:rgba(217,119,6,0.15);  color:#fbbf24; }
-.g-c   { background:rgba(234,88,12,0.15);  color:#fb923c; }
-.g-d\+ { background:rgba(220,38,38,0.15);  color:#f87171; }
-.g-d   { background:rgba(159,18,57,0.15);  color:#fb7185; }
-.g-f   { background:rgba(55,65,81,0.2);    color:#6b7280; }
-.d4-val { font-family:'IBM Plex Mono',monospace; font-size:13px; text-align:center; }
-
-/* ── DELETE BTN ── */
-.btn-del {
-  background:none; border:1px solid transparent; border-radius:6px; padding:5px 9px;
-  color:var(--text-muted); cursor:pointer; font-size:13px; transition:all 0.15s; display:block; margin:0 auto;
-}
-.btn-del:hover { background:rgba(220,38,38,0.12); border-color:rgba(220,38,38,0.3); color:#f87171; }
-
-/* ── EMPTY STATE ── */
-.empty-state { padding:60px 20px; text-align:center; color:var(--text-muted); }
-.empty-icon { font-size:36px; margin-bottom:12px; opacity:0.4; }
-.empty-state p { font-size:14px; }
-
-/* ── ACTION ROW ── */
-.action-row { display:flex; gap:8px; padding:12px 20px; border-top:1px solid var(--border); }
-.btn-sec {
-  flex:1; padding:9px; background:var(--surface2); border:1px solid var(--border2);
-  border-radius:6px; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600;
-  color:var(--text-dim); cursor:pointer; transition:all 0.15s; letter-spacing:0.04em; text-transform:uppercase;
-}
-.btn-sec:hover { background:var(--surface3); border-color:var(--red); color:var(--text); }
-
-/* ── INFO HINT ── */
-.info-hint { font-size:11px; color:var(--text-muted); margin-top:8px; padding:8px 12px; background:rgba(255,255,255,0.03); border-radius:6px; border-left:2px solid var(--border2); }
-
-/* ── TOAST ── */
-.toast {
-  position:fixed; bottom:24px; right:24px; background:var(--surface3);
-  border:1px solid var(--border2); border-radius:8px; padding:12px 18px;
-  font-size:13px; font-weight:500; color:var(--text); box-shadow:0 8px 24px rgba(0,0,0,0.5);
-  z-index:10000; transform:translateY(80px); opacity:0; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-}
-.toast.show { transform:translateY(0); opacity:1; }
-.toast.error { border-color:rgba(220,38,38,0.5); color:#f87171; }
-.toast.success { border-color:rgba(22,163,74,0.5); color:#4ade80; }
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width:4px; height:4px; }
-::-webkit-scrollbar-track { background:var(--surface); }
-::-webkit-scrollbar-thumb { background:var(--border2); border-radius:99px; }
-
-/* ── SUGGESTION PANEL ── */
-.suggest-panel { margin-top:20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
-.suggest-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.suggest-header-left { display:flex; align-items:center; gap:8px; }
-.suggest-header-left svg { color:#fbbf24; }
-.suggest-title { font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); }
-.suggest-tabs { display:flex; gap:6px; }
-.suggest-tab { padding:5px 14px; border-radius:99px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid var(--border2); background:var(--surface2); color:var(--text-muted); transition:all 0.15s; white-space:nowrap; }
-.suggest-tab.active-gioi    { background:rgba(74,222,128,0.12); border-color:rgba(74,222,128,0.4); color:#4ade80; }
-.suggest-tab.active-xuatsac { background:rgba(251,191,36,0.12); border-color:rgba(251,191,36,0.4); color:#fbbf24; }
-.suggest-body { padding:20px; }
-.suggest-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
-.sum-card { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px 12px; text-align:center; }
-.sum-label { font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
-.sum-val { font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:500; }
-.progress-wrap { margin-bottom:18px; }
-.progress-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-.progress-label span { font-size:12px; color:var(--text-muted); }
-.progress-label strong { font-size:13px; font-weight:700; }
-.progress-track { height:8px; border-radius:4px; background:var(--border); overflow:hidden; }
-.progress-fill { height:100%; border-radius:4px; transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
-.progress-fill.gioi    { background:linear-gradient(90deg,#16a34a,#4ade80); }
-.progress-fill.xuatsac { background:linear-gradient(90deg,#b45309,#fbbf24); }
-.suggest-list { display:flex; flex-direction:column; gap:8px; }
-.suggest-item { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:12px 14px; display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; transition:border-color 0.15s; }
-.suggest-item:hover { border-color:var(--border2); }
-.si-name { font-size:13px; color:var(--text); margin-bottom:4px; font-weight:500; }
-.si-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-.si-code { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-muted); }
-.si-credits { font-size:11px; color:var(--text-muted); background:var(--border); padding:1px 6px; border-radius:4px; }
-.si-arrow { font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:4px; }
-.si-right { text-align:right; }
-.si-gain { font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:700; color:#4ade80; white-space:nowrap; }
-.si-gain.gold { color:#fbbf24; }
-.si-new-grade { font-size:11px; color:var(--text-muted); margin-top:3px; }
-.suggest-empty { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; }
-.suggest-empty .ei { font-size:32px; margin-bottom:10px; opacity:0.5; }
-.suggest-note { margin-top:14px; padding:10px 14px; background:rgba(255,255,255,0.02); border-radius:6px; border-left:2px solid var(--border2); font-size:11px; color:var(--text-muted); line-height:1.6; }
-
-/* ════════════════════════════════════════════
-   RESPONSIVE ≤ 900px
-════════════════════════════════════════════ */
-@media (max-width:900px) {
-  .main-grid { grid-template-columns:1fr; }
-}
-
-/* ════════════════════════════════════════════
-   RESPONSIVE ≤ 600px
-════════════════════════════════════════════ */
-@media (max-width:600px) {
-  header { padding:28px 16px 20px; }
-  header p { font-size:12px; }
-  .container { padding:16px 12px 80px; }
-  .stats-row { grid-template-columns:1fr 1fr; gap:10px; }
-  .stats-row .stat-card:nth-child(3) { grid-column:1/-1; }
-  .stat-card { padding:14px; }
-  .stat-value { font-size:26px; }
-  input[type="text"], input[type="number"], select, .filter-input { font-size:16px; padding:12px 14px; }
-  .panel-body { padding:16px 14px; }
-  .grade-grid { gap:5px; }
-  .grade-btn { padding:10px 0; font-size:13px; }
-  .btn-add { padding:14px; font-size:14px; }
-  table { min-width:320px; }
-  td, thead th { padding:9px 8px; font-size:12px; }
-  .btn-del { padding:7px 9px; }
-  .action-row { flex-wrap:wrap; gap:8px; padding:12px 14px; }
-  .btn-sec { flex:1 1 calc(50% - 4px); padding:10px 6px; font-size:11px; }
-  .btn-sec:last-child { flex:1 1 100%; }
-  .filter-bar { padding:12px 14px; }
-  .toast { left:12px; right:12px; bottom:16px; text-align:center; }
-  .suggest-summary { grid-template-columns:1fr 1fr; }
-  .suggest-summary .sum-card:last-child { grid-column:1/-1; }
-  .suggest-tabs { gap:4px; }
-  .suggest-tab { padding:4px 10px; font-size:11px; }
-  .suggest-body { padding:14px 12px; }
-  .suggest-header { padding:12px 14px; }
-}
-
-/* ════════════════════════════════════════════
-   RESPONSIVE ≤ 390px
-════════════════════════════════════════════ */
-@media (max-width:390px) {
-  h1 { font-size:22px; }
-  .container { padding:12px 10px 80px; }
-  .panel-body { padding:14px 10px; }
-  .stats-row { grid-template-columns:1fr; }
-  .stats-row .stat-card:nth-child(3) { grid-column:1; }
-  .grade-grid { gap:4px; }
-  .grade-btn { font-size:12px; padding:9px 0; }
+@media(max-width:390px){
+  h1{font-size:22px;}
+  .container{padding:12px 10px 80px;}
+  .panel-body{padding:14px 10px;}
+  .stats-row{grid-template-columns:1fr;}
+  .stats-row .stat-card:nth-child(3){grid-column:1;}
+  .grade-grid{gap:4px;}
+  .grade-btn{font-size:12px;padding:9px 0;}
 }
 </style>
 </head>
@@ -327,7 +279,6 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
 </header>
 
 <div class="container">
-
   <div class="stats-row">
     <div class="stat-card primary">
       <div class="stat-label">Điểm CPA</div>
@@ -348,7 +299,6 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
   </div>
 
   <div class="main-grid">
-
     <!-- INPUT PANEL -->
     <div>
       <div class="panel">
@@ -417,7 +367,7 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
                 <th class="center">TC</th>
                 <th class="center">Điểm</th>
                 <th class="center">Hệ 4</th>
-                <th class="center">Xóa</th>
+                <th class="center">Thao tác</th>
               </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -434,7 +384,6 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
         </div>
       </div>
     </div>
-
   </div>
 
   <!-- SUGGEST PANEL -->
@@ -477,16 +426,45 @@ td { padding:12px 16px; font-size:13px; vertical-align:middle; }
       </div>
       <div class="suggest-list" id="suggestList"></div>
       <div class="suggest-note">
-        💡 Phần <strong style="color:#4ade80">Gợi ý cải thiện</strong>: hiển thị điểm tối thiểu cần đạt để đạt mục tiêu khi cải thiện <strong style="color:#4ade80">1 môn</strong> hiện tại chưa có tính năng cải thiện nhiều môn cùng lúc.
+        💡 Phần <strong style="color:#4ade80">Cải thiện 1 môn là đủ</strong>: hiển thị điểm tối thiểu cần đạt (không nhất thiết phải A). Phần <strong style="color:var(--text-dim)">Góp phần</strong>: các môn cần kết hợp nhiều môn mới đủ, xếp theo hiệu quả tăng CPA.
       </div>
     </div>
   </div>
-
 </div>
 
 <footer style="text-align:center;padding:24px 16px 40px;color:var(--text-muted);font-size:13px;position:relative;z-index:1;">
   Được tạo bởi <a href="https://www.facebook.com/vanthe06" target="_blank" rel="noopener" style="color:var(--red-light);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(232,41,58,0.3);padding-bottom:1px;transition:color 0.15s;">Nguyễn Văn Thế</a>
 </footer>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Chỉnh sửa điểm</span>
+      <button class="modal-close" onclick="closeEdit()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-course-info" id="editCourseCode"></div>
+      <div class="modal-course-name" id="editCourseName"></div>
+      <div class="modal-section-label">Chọn điểm chữ mới</div>
+      <div class="modal-grade-grid">
+        <button class="mgb" data-g="A+" onclick="pickGrade(this,event)">A+</button>
+        <button class="mgb" data-g="A"  onclick="pickGrade(this,event)">A</button>
+        <button class="mgb" data-g="B+" onclick="pickGrade(this,event)">B+</button>
+        <button class="mgb" data-g="B"  onclick="pickGrade(this,event)">B</button>
+        <button class="mgb" data-g="C+" onclick="pickGrade(this,event)">C+</button>
+        <button class="mgb" data-g="C"  onclick="pickGrade(this,event)">C</button>
+        <button class="mgb" data-g="D+" onclick="pickGrade(this,event)">D+</button>
+        <button class="mgb" data-g="D"  onclick="pickGrade(this,event)">D</button>
+        <button class="mgb" data-g="F"  onclick="pickGrade(this,event)">F</button>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeEdit()">Hủy</button>
+        <button class="btn-save"   onclick="saveEdit(event)">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
@@ -509,174 +487,233 @@ async function loadCoursesData() {
 loadCoursesData();
 
 // ── STATE ──
-let courses = JSON.parse(localStorage.getItem('hust_cpa_v2')||'[]');
+let courses = JSON.parse(localStorage.getItem('hust_cpa_v2') || '[]');
 let selectedGrade = null;
 
 const GRADE_MAP = {
-  'A+':4.0, 'A':4.0, 'B+':3.5, 'B':3.0,
-  'C+':2.5, 'C':2.0, 'D+':1.5, 'D':1.0, 'F':0.0
+  'A+':4.0,'A':4.0,'B+':3.5,'B':3.0,'C+':2.5,'C':2.0,'D+':1.5,'D':1.0,'F':0.0
 };
+// Dùng class không có ký tự đặc biệt để tránh lỗi CSS selector
 const GRADE_CLASS = {
-  'A+':'g-a+', 'A':'g-a', 'B+':'g-b+', 'B':'g-b',
-  'C+':'g-c+', 'C':'g-c', 'D+':'g-d+', 'D':'g-d', 'F':'g-f'
+  'A+':'g-ap','A':'g-a','B+':'g-bp','B':'g-b',
+  'C+':'g-cp','C':'g-c','D+':'g-dp','D':'g-d','F':'g-f'
 };
 
 // ── AUTOCOMPLETE ──
 function onCodeInput() {
-  const q=document.getElementById('inputCode').value.trim().toUpperCase();
-  const list=document.getElementById('acList');
-  if(q.length<2){list.classList.remove('show');return;}
-  const res=DB_ENTRIES.filter(e=>e.searchKey.includes(q.toLowerCase())||e.code.startsWith(q)).slice(0,8);
-  if(!res.length){list.classList.remove('show');return;}
-  list.innerHTML=res.map(r=>`<div class="ac-item" onclick="selectCourse('${r.code}')"><span class="ac-code">${r.code}</span><span class="ac-name">${r.ten}</span><span class="ac-credits">${r.tinChi}TC</span></div>`).join('');
+  const q = document.getElementById('inputCode').value.trim().toUpperCase();
+  const list = document.getElementById('acList');
+  if (q.length < 2) { list.classList.remove('show'); return; }
+  const res = DB_ENTRIES.filter(e => e.searchKey.includes(q.toLowerCase()) || e.code.startsWith(q)).slice(0,8);
+  if (!res.length) { list.classList.remove('show'); return; }
+  list.innerHTML = res.map(r => `<div class="ac-item" onclick="selectCourse('${r.code}')"><span class="ac-code">${r.code}</span><span class="ac-name">${r.ten}</span><span class="ac-credits">${r.tinChi}TC</span></div>`).join('');
   list.classList.add('show');
 }
 function onNameInput() {
-  const q=document.getElementById('inputName').value.trim().toLowerCase();
-  const list=document.getElementById('acListName');
-  if(q.length<2){list.classList.remove('show');return;}
-  const res=DB_ENTRIES.filter(e=>e.ten.toLowerCase().includes(q)).slice(0,8);
-  if(!res.length){list.classList.remove('show');return;}
-  list.innerHTML=res.map(r=>`<div class="ac-item" onclick="selectCourse('${r.code}')"><span class="ac-code">${r.code}</span><span class="ac-name">${r.ten}</span><span class="ac-credits">${r.tinChi}TC</span></div>`).join('');
+  const q = document.getElementById('inputName').value.trim().toLowerCase();
+  const list = document.getElementById('acListName');
+  if (q.length < 2) { list.classList.remove('show'); return; }
+  const res = DB_ENTRIES.filter(e => e.ten.toLowerCase().includes(q)).slice(0,8);
+  if (!res.length) { list.classList.remove('show'); return; }
+  list.innerHTML = res.map(r => `<div class="ac-item" onclick="selectCourse('${r.code}')"><span class="ac-code">${r.code}</span><span class="ac-name">${r.ten}</span><span class="ac-credits">${r.tinChi}TC</span></div>`).join('');
   list.classList.add('show');
 }
 function selectCourse(code) {
-  const info=DB_ENTRIES.find(c=>c.code===code); if(!info)return;
-  document.getElementById('inputCode').value=info.code;
-  document.getElementById('inputName').value=info.ten;
-  document.getElementById('inputCredits').value=info.tinChi;
+  const info = DB_ENTRIES.find(c => c.code === code);
+  if (!info) return;
+  document.getElementById('inputCode').value = info.code;
+  document.getElementById('inputName').value = info.ten;
+  document.getElementById('inputCredits').value = info.tinChi;
   document.getElementById('acList').classList.remove('show');
   document.getElementById('acListName').classList.remove('show');
 }
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.input-wrapper')){
+document.addEventListener('click', e => {
+  if (!e.target.closest('.input-wrapper')) {
     document.getElementById('acList').classList.remove('show');
     document.getElementById('acListName').classList.remove('show');
   }
 });
 
-// ── GRADE ──
+// ── GRADE SELECT (form) ──
 function selectGrade(btn) {
-  document.querySelectorAll('.grade-btn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected'); selectedGrade=btn.dataset.grade;
+  document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedGrade = btn.dataset.grade;
 }
 
 // ── ADD ──
 function addCourse() {
-  const code=document.getElementById('inputCode').value.trim().toUpperCase()||'---';
-  const name=document.getElementById('inputName').value.trim();
-  const credits=parseFloat(document.getElementById('inputCredits').value);
-  const grade=selectedGrade;
-  if(!name)                          return toast('Vui lòng nhập tên môn học','error');
-  if(isNaN(credits)||credits<=0)     return toast('Vui lòng nhập số tín chỉ hợp lệ','error');
-  if(!grade)                         return toast('Vui lòng chọn điểm chữ','error');
-  const dup=courses.find(c=>(code!=='---'&&c.code===code)||c.name.toLowerCase()===name.toLowerCase());
-  if(dup) return toast('⚠️ Môn học đã tồn tại!','error');
-  courses.push({code,name,credits,grade,gpa4:GRADE_MAP[grade]});
+  const code    = document.getElementById('inputCode').value.trim().toUpperCase() || '---';
+  const name    = document.getElementById('inputName').value.trim();
+  const credits = parseFloat(document.getElementById('inputCredits').value);
+  const grade   = selectedGrade;
+  if (!name)                        return toast('Vui lòng nhập tên môn học','error');
+  if (isNaN(credits) || credits<=0) return toast('Vui lòng nhập số tín chỉ hợp lệ','error');
+  if (!grade)                       return toast('Vui lòng chọn điểm chữ','error');
+  const dup = courses.find(c => (code!=='---' && c.code===code) || c.name.toLowerCase()===name.toLowerCase());
+  if (dup) return toast('⚠️ Môn học đã tồn tại!','error');
+  courses.push({ code, name, credits, grade, gpa4: GRADE_MAP[grade] });
   save();
-  document.getElementById('inputCode').value='';
-  document.getElementById('inputName').value='';
-  document.getElementById('inputCredits').value='';
-  document.querySelectorAll('.grade-btn').forEach(b=>b.classList.remove('selected'));
-  selectedGrade=null;
-  toast('✓ Đã thêm môn học','success'); renderAll();
+  document.getElementById('inputCode').value = '';
+  document.getElementById('inputName').value = '';
+  document.getElementById('inputCredits').value = '';
+  document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+  selectedGrade = null;
+  toast('✓ Đã thêm môn học','success');
+  renderAll();
 }
 
 // ── DELETE / SAVE ──
-function deleteCourse(i){ courses.splice(i,1); save(); renderAll(); }
-function save(){ localStorage.setItem('hust_cpa_v2',JSON.stringify(courses)); }
+function deleteCourse(i) { courses.splice(i,1); save(); renderAll(); }
+function save() { localStorage.setItem('hust_cpa_v2', JSON.stringify(courses)); }
 
 // ── RENDER TABLE ──
 function renderTable() {
-  const q=document.getElementById('filterInput').value.toLowerCase();
-  const tbody=document.getElementById('tableBody');
-  const empty=document.getElementById('emptyState');
-  if(!courses.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
-  empty.style.display='none';
-  tbody.innerHTML=courses.map((c,i)=>{
-    if(q&&!c.code.toLowerCase().includes(q)&&!c.name.toLowerCase().includes(q)) return '';
-    const gc=GRADE_CLASS[c.grade]||'g-f';
-    const col=c.gpa4>=3.5?'#4ade80':c.gpa4>=2.5?'#fbbf24':c.gpa4>=1.0?'#fb923c':'#9ca3af';
-    return `<tr><td class="td-code">${c.code}</td><td class="td-name">${c.name}</td><td class="td-credits">${c.credits}</td><td class="td-center"><span class="grade-badge ${gc}">${c.grade}</span></td><td class="d4-val" style="color:${col}">${c.gpa4.toFixed(1)}</td><td><button class="btn-del" onclick="deleteCourse(${i})">✕</button></td></tr>`;
+  const q     = document.getElementById('filterInput').value.toLowerCase();
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+  if (!courses.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = courses.map((c,i) => {
+    if (q && !c.code.toLowerCase().includes(q) && !c.name.toLowerCase().includes(q)) return '';
+    const gc  = GRADE_CLASS[c.grade] || 'g-f';
+    const col = c.gpa4>=3.5?'#4ade80':c.gpa4>=2.5?'#fbbf24':c.gpa4>=1.0?'#fb923c':'#9ca3af';
+    return `<tr>
+      <td class="td-code">${c.code}</td>
+      <td class="td-name">${c.name}</td>
+      <td class="td-credits">${c.credits}</td>
+      <td class="td-center"><span class="grade-badge ${gc}">${c.grade}</span></td>
+      <td class="d4-val" style="color:${col}">${c.gpa4.toFixed(1)}</td>
+      <td class="td-actions">
+        <button class="btn-edit" onclick="openEdit(${i})" title="Chỉnh sửa">✎</button>
+        <button class="btn-del"  onclick="deleteCourse(${i})" title="Xóa">✕</button>
+      </td>
+    </tr>`;
   }).join('');
 }
 
 // ── RENDER STATS ──
 function renderStats() {
-  let tc=0,ws=0;
-  courses.forEach(c=>{tc+=c.credits;ws+=c.gpa4*c.credits;});
-  const cpa=tc===0?0:ws/tc;
-  document.getElementById('statCPA').textContent=cpa.toFixed(2);
-  document.getElementById('statCredits').textContent=tc;
-  document.getElementById('statCourses').textContent=courses.length;
-  document.getElementById('rankBar').style.width=(cpa/4*100)+'%';
-  let rank,color;
-  if(cpa>=3.6){rank='🏆 Xuất sắc';color='#fbbf24';}
-  else if(cpa>=3.2){rank='⭐ Giỏi';color='#4ade80';}
-  else if(cpa>=2.5){rank='✓ Khá';color='#60a5fa';}
-  else if(cpa>=2.0){rank='○ Trung bình';color='#fb923c';}
-  else if(cpa>0){rank='⚠ Yếu';color='#f87171';}
-  else{rank='Chưa có dữ liệu';color='var(--text-muted)';}
-  document.getElementById('rankLabel').textContent=rank;
-  document.getElementById('rankLabel').style.color=color;
+  let tc=0, ws=0;
+  courses.forEach(c => { tc+=c.credits; ws+=c.gpa4*c.credits; });
+  const cpa = tc===0 ? 0 : ws/tc;
+  document.getElementById('statCPA').textContent     = cpa.toFixed(2);
+  document.getElementById('statCredits').textContent = tc;
+  document.getElementById('statCourses').textContent = courses.length;
+  document.getElementById('rankBar').style.width     = (cpa/4*100)+'%';
+  let rank, color;
+  if      (cpa>=3.6) { rank='🏆 Xuất sắc';    color='#fbbf24'; }
+  else if (cpa>=3.2) { rank='⭐ Giỏi';         color='#4ade80'; }
+  else if (cpa>=2.5) { rank='✓ Khá';           color='#60a5fa'; }
+  else if (cpa>=2.0) { rank='○ Trung bình';    color='#fb923c'; }
+  else if (cpa>0)    { rank='⚠ Yếu';           color='#f87171'; }
+  else               { rank='Chưa có dữ liệu'; color='var(--text-muted)'; }
+  document.getElementById('rankLabel').textContent = rank;
+  document.getElementById('rankLabel').style.color  = color;
 }
 
-function renderAll(){ renderTable(); renderStats(); renderSuggest(); }
+function renderAll() { renderTable(); renderStats(); renderSuggest(); }
 
 // ── EXPORT / IMPORT ──
 function exportJSON() {
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([JSON.stringify(courses,null,2)],{type:'application/json'}));
-  a.download='hust_cpa_data.json'; a.click();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(courses,null,2)],{type:'application/json'}));
+  a.download = 'hust_cpa_data.json'; a.click();
   toast('✓ Đã xuất file JSON','success');
 }
-function importTrigger(){ document.getElementById('importFile').click(); }
+function importTrigger() { document.getElementById('importFile').click(); }
 function importJSON(e) {
-  const file=e.target.files[0]; if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    try{
-      const data=JSON.parse(ev.target.result);
-      if(Array.isArray(data)){courses=data;save();renderAll();toast(`✓ Đã nhập ${data.length} môn học`,'success');}
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (Array.isArray(data)) { courses=data; save(); renderAll(); toast(`✓ Đã nhập ${data.length} môn học`,'success'); }
       else toast('File không hợp lệ','error');
-    }catch{toast('Lỗi đọc file','error');}
+    } catch { toast('Lỗi đọc file','error'); }
   };
   reader.readAsText(file); e.target.value='';
 }
 function clearAll() {
-  if(!courses.length)return;
-  if(confirm(`Xóa tất cả ${courses.length} môn học?`)){courses=[];save();renderAll();toast('Đã xóa tất cả','success');}
+  if (!courses.length) return;
+  if (confirm(`Xóa tất cả ${courses.length} môn học?`)) { courses=[]; save(); renderAll(); toast('Đã xóa tất cả','success'); }
 }
 
 // ── TOAST ──
 let toastTimer;
-function toast(msg,type='') {
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.className='toast show '+type;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'toast show '+type;
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ── EDIT MODAL ──
+let editIdx   = null;   // index của course đang sửa
+let editGrade = null;   // điểm chữ đang được chọn trong modal
+
+function openEdit(i) {
+  editIdx   = i;
+  editGrade = courses[i].grade;
+  // Điền thông tin
+  document.getElementById('editCourseCode').textContent = courses[i].code + ' · ' + courses[i].credits + ' TC';
+  document.getElementById('editCourseName').textContent = courses[i].name;
+  // Highlight điểm hiện tại
+  document.querySelectorAll('.mgb').forEach(b => {
+    b.classList.toggle('sel', b.dataset.g === editGrade);
+  });
+  // Mở modal
+  document.getElementById('editModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEdit() {
+  document.getElementById('editModal').classList.remove('show');
+  document.body.style.overflow = '';
+  editIdx = null; editGrade = null;
+}
+
+// Click backdrop để đóng
+document.getElementById('editModal').addEventListener('click', function(e) {
+  if (e.target === this) closeEdit();
+});
+
+// Phím Escape để đóng
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEdit(); });
+
+function pickGrade(btn, e) {
+  if (e) e.stopPropagation();
+  document.querySelectorAll('.mgb').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  editGrade = btn.dataset.g;
+}
+
+function saveEdit(e) {
+  if (e) e.stopPropagation();
+  if (editIdx === null) return;
+  if (!editGrade)       return toast('Vui lòng chọn điểm chữ','error');
+  const idx = editIdx;
+  const grade = editGrade;
+  closeEdit();
+  courses[idx].grade = grade;
+  courses[idx].gpa4  = GRADE_MAP[grade];
+  save();
+  renderAll();
+  toast('✓ Đã cập nhật điểm','success');
 }
 
 // ── SUGGESTION ENGINE ──
 let suggestTarget = 'gioi';
-const TARGETS      = { gioi:3.20, xuatsac:3.60 };
+const TARGETS       = { gioi:3.20, xuatsac:3.60 };
 const TARGET_LABELS = { gioi:'3.20', xuatsac:'3.60' };
-
-// Thang điểm theo thứ tự tăng dần (A+ = 4.0, tách riêng khỏi A để tránh trùng)
-const GRADE_STEPS = [
-  { grade:'F',  val:0.0 },
-  { grade:'D',  val:1.0 },
-  { grade:'D+', val:1.5 },
-  { grade:'C',  val:2.0 },
-  { grade:'C+', val:2.5 },
-  { grade:'B',  val:3.0 },
-  { grade:'B+', val:3.5 },
-  { grade:'A',  val:4.0 },
+const GRADE_STEPS   = [
+  {grade:'F', val:0.0},{grade:'D', val:1.0},{grade:'D+',val:1.5},
+  {grade:'C', val:2.0},{grade:'C+',val:2.5},{grade:'B', val:3.0},
+  {grade:'B+',val:3.5},{grade:'A', val:4.0},
 ];
 
-// Tìm điểm chữ tối thiểu cần đạt để CPA >= target khi cải thiện 1 môn
-function minGradeNeeded(courseIdx, ws, tc, target) {
-  const c = courses[courseIdx];
+function minGradeNeeded(idx, ws, tc, target) {
+  const c = courses[idx];
   const wsWithout = ws - c.gpa4 * c.credits;
   for (const step of GRADE_STEPS) {
     if (step.val <= c.gpa4) continue;
@@ -701,10 +738,9 @@ function renderSuggest() {
 
   const target = TARGETS[suggestTarget];
   let tc=0, ws=0;
-  courses.forEach(c=>{ tc+=c.credits; ws+=c.gpa4*c.credits; });
+  courses.forEach(c => { tc+=c.credits; ws+=c.gpa4*c.credits; });
   const cpa = tc===0 ? 0 : ws/tc;
 
-  // Summary
   document.getElementById('sumCurrent').textContent = cpa.toFixed(2);
   document.getElementById('sumTarget').textContent  = TARGET_LABELS[suggestTarget];
   const gap = Math.max(0, target-cpa);
@@ -712,7 +748,6 @@ function renderSuggest() {
   sumGap.textContent = gap.toFixed(2);
   sumGap.style.color = gap===0 ? '#4ade80' : '#fb923c';
 
-  // Progress
   const pct = Math.min(100, Math.round((cpa/target)*100));
   document.getElementById('progressFill').style.width = pct+'%';
   const pctEl = document.getElementById('progressPct');
@@ -720,59 +755,43 @@ function renderSuggest() {
   pctEl.style.color = pct>=100 ? '#4ade80' : suggestTarget==='xuatsac' ? '#fbbf24' : '#4ade80';
 
   const list = document.getElementById('suggestList');
-
   if (cpa >= target) {
     list.innerHTML = `<div class="suggest-empty"><div class="ei">${suggestTarget==='xuatsac'?'🏆':'⭐'}</div><p>Chúc mừng! Bạn đã đạt <strong>${suggestTarget==='xuatsac'?'Xuất sắc':'Giỏi'}</strong> rồi!</p></div>`;
     return;
   }
 
-  const isGold = suggestTarget === 'xuatsac';
-  const solo = [], partial = [];
-
-  courses.forEach((c, i) => {
-    // Bỏ qua môn đã đạt 4.0 (A hoặc A+)
+  const isGold = suggestTarget==='xuatsac';
+  const solo=[], partial=[];
+  courses.forEach((c,i) => {
     if (c.gpa4 >= 4.0) return;
-
     const needed = minGradeNeeded(i, ws, tc, target);
-    const wsWithout = ws - c.gpa4 * c.credits;
-    const maxCpa = (wsWithout + 4.0 * c.credits) / tc;
+    const wsWithout = ws - c.gpa4*c.credits;
+    const maxCpa = (wsWithout + 4.0*c.credits) / tc;
     const gain = maxCpa - cpa;
     const gainPerCredit = gain / c.credits;
-
-    if (needed) {
-      solo.push({ ...c, i, needed, maxCpa, gain, gainPerCredit });
-    } else {
-      partial.push({ ...c, i, maxCpa, gain, gainPerCredit });
-    }
+    if (needed) solo.push({...c, i, needed, maxCpa, gain, gainPerCredit});
+    else        partial.push({...c, i, maxCpa, gain, gainPerCredit});
   });
-
-  // solo: dễ nhất trước (điểm cần thấp nhất), partial: hiệu quả nhất trước
-  solo.sort((a,b) => a.needed.val - b.needed.val || b.gainPerCredit - a.gainPerCredit);
-  partial.sort((a,b) => b.gainPerCredit - a.gainPerCredit);
+  solo.sort((a,b) => a.needed.val-b.needed.val || b.gainPerCredit-a.gainPerCredit);
+  partial.sort((a,b) => b.gainPerCredit-a.gainPerCredit);
 
   if (!solo.length && !partial.length) {
-    list.innerHTML = `<div class="suggest-empty"><div class="ei">📚</div><p>Tất cả môn đều đã đạt điểm tối đa.</p></div>`;
+    list.innerHTML=`<div class="suggest-empty"><div class="ei">📚</div><p>Tất cả môn đều đã đạt điểm tối đa.</p></div>`;
     return;
   }
 
-  let html = '';
-
+  let html='';
   if (solo.length) {
     html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${isGold?'#fbbf24':'#4ade80'};margin-bottom:8px;padding:0 2px;">✦ Cải thiện 1 môn là đủ đạt mục tiêu</div>`;
-    html += solo.slice(0,5).map((c, rank) => {
-      const neededGc  = GRADE_CLASS[c.needed.grade] || 'g-f';
-      const currentGc = GRADE_CLASS[c.grade] || 'g-f';
+    html += solo.slice(0,5).map((c,rank) => {
+      const ngc = GRADE_CLASS[c.needed.grade]||'g-f';
+      const cgc = GRADE_CLASS[c.grade]||'g-f';
       return `<div class="suggest-item" style="border-color:${isGold?'rgba(251,191,36,0.25)':'rgba(74,222,128,0.25)'}">
         <div class="si-left">
           <div class="si-name">${rank+1}. ${c.name}</div>
           <div class="si-meta">
-            <span class="si-code">${c.code}</span>
-            <span class="si-credits">${c.credits} TC</span>
-            <span class="si-arrow">
-              <span class="grade-badge ${currentGc}" style="font-size:10px;padding:1px 7px">${c.grade}</span>
-              →
-              <span class="grade-badge ${neededGc}" style="font-size:10px;padding:1px 7px">${c.needed.grade}</span>
-            </span>
+            <span class="si-code">${c.code}</span><span class="si-credits">${c.credits} TC</span>
+            <span class="si-arrow"><span class="grade-badge ${cgc}" style="font-size:10px;padding:1px 7px">${c.grade}</span> → <span class="grade-badge ${ngc}" style="font-size:10px;padding:1px 7px">${c.needed.grade}</span></span>
           </div>
         </div>
         <div class="si-right">
@@ -782,21 +801,16 @@ function renderSuggest() {
       </div>`;
     }).join('');
   }
-
   if (partial.length) {
     html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin:${solo.length?'16px':'0'}px 0 8px;padding:0 2px;">○ Góp phần tăng CPA (cần cải thiện thêm nhiều môn)</div>`;
-    html += partial.slice(0,5).map((c, rank) => {
-      const currentGc = GRADE_CLASS[c.grade] || 'g-f';
+    html += partial.slice(0,5).map((c,rank) => {
+      const cgc = GRADE_CLASS[c.grade]||'g-f';
       return `<div class="suggest-item">
         <div class="si-left">
           <div class="si-name">${rank+1}. ${c.name}</div>
           <div class="si-meta">
-            <span class="si-code">${c.code}</span>
-            <span class="si-credits">${c.credits} TC</span>
-            <span class="si-arrow">
-              <span class="grade-badge ${currentGc}" style="font-size:10px;padding:1px 7px">${c.grade}</span>
-              → A
-            </span>
+            <span class="si-code">${c.code}</span><span class="si-credits">${c.credits} TC</span>
+            <span class="si-arrow"><span class="grade-badge ${cgc}" style="font-size:10px;padding:1px 7px">${c.grade}</span> → A</span>
           </div>
         </div>
         <div class="si-right">
@@ -806,7 +820,6 @@ function renderSuggest() {
       </div>`;
     }).join('');
   }
-
   list.innerHTML = html;
 }
 
