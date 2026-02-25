@@ -270,9 +270,35 @@ tr.row-sel:hover { background:rgba(196,18,48,0.07) !important; }
 .si-right{text-align:right;}
 .si-gain{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:#4ade80;white-space:nowrap;}
 .si-gain.gold{color:#fbbf24;}
+.si-gain.custom{color:#a78bfa;}
 .si-new-grade{font-size:11px;color:var(--text-muted);margin-top:3px;}
 .suggest-empty{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:14px;}
 .suggest-empty .ei{font-size:32px;margin-bottom:10px;opacity:0.5;}
+
+.suggest-tab.active-custom{background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.4);color:#a78bfa;}
+.progress-fill.custom{background:linear-gradient(90deg,#6d28d9,#a78bfa);}
+.custom-target-wrap{
+  display:none; align-items:center; gap:10px; padding:14px 20px;
+  border-bottom:1px solid var(--border); background:rgba(167,139,250,0.04);
+}
+.custom-target-wrap.show{ display:flex; }
+.custom-target-label{ font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#a78bfa;white-space:nowrap; }
+.custom-target-input{
+  width:100px; background:var(--surface2); border:1px solid rgba(167,139,250,0.4);
+  border-radius:7px; padding:8px 12px; font-family:'IBM Plex Mono',monospace;
+  font-size:15px; font-weight:600; color:#a78bfa; outline:none; text-align:center;
+  transition:border-color 0.15s;
+}
+.custom-target-input:focus{ border-color:#a78bfa; background:var(--surface3); }
+.custom-target-hint{ font-size:11px; color:var(--text-muted); }
+.custom-target-preset{ display:flex; gap:6px; flex-wrap:wrap; }
+.preset-btn{
+  padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600;
+  border:1px solid var(--border2); background:var(--surface2); color:var(--text-muted);
+  cursor:pointer; transition:all 0.15s;
+}
+.preset-btn:hover{ border-color:#a78bfa; color:#a78bfa; }
+
 .suggest-note{margin-top:14px;padding:10px 14px;background:rgba(255,255,255,0.02);border-radius:6px;border-left:2px solid var(--border2);font-size:11px;color:var(--text-muted);line-height:1.6;}
 
 
@@ -549,6 +575,25 @@ tbody tr.row-sel:hover { background:rgba(196,18,48,0.07) !important; }
       <div class="suggest-tabs">
         <button class="suggest-tab active-gioi" id="tabGioi" onclick="switchTarget('gioi')">⭐ Giỏi (3.20)</button>
         <button class="suggest-tab" id="tabXuatsac" onclick="switchTarget('xuatsac')">🏆 Xuất sắc (3.60)</button>
+        <button class="suggest-tab" id="tabCustom" onclick="switchTarget('custom')">🎯 Tùy chỉnh</button>
+      </div>
+    </div>
+    <div class="custom-target-wrap" id="customTargetWrap">
+      <span class="custom-target-label">Mục tiêu CPA</span>
+      <input type="number" class="custom-target-input" id="customTargetInput"
+        min="0.01" max="4.00" step="0.01" value="3.50"
+        oninput="onCustomTargetInput()">
+      <div>
+        <div class="custom-target-hint" style="margin-bottom:6px">Gợi ý nhanh:</div>
+        <div class="custom-target-preset">
+          <button class="preset-btn" onclick="setPreset(3.00)">3.00</button>
+          <button class="preset-btn" onclick="setPreset(3.20)">3.20</button>
+          <button class="preset-btn" onclick="setPreset(3.40)">3.40</button>
+          <button class="preset-btn" onclick="setPreset(3.50)">3.50</button>
+          <button class="preset-btn" onclick="setPreset(3.60)">3.60</button>
+          <button class="preset-btn" onclick="setPreset(3.80)">3.80</button>
+          <button class="preset-btn" onclick="setPreset(4.00)">4.00</button>
+        </div>
       </div>
     </div>
     <div class="suggest-body">
@@ -577,7 +622,7 @@ tbody tr.row-sel:hover { background:rgba(196,18,48,0.07) !important; }
       </div>
       <div class="suggest-list" id="suggestList"></div>
       <div class="suggest-note">
-        💡 Phần <strong style="color:#4ade80">Cải thiện 1 môn là đủ</strong>: hiển thị điểm tối thiểu cần đạt. Phần <strong style="color:var(--text-dim)">Góp phần</strong>: các môn cần kết hợp nhiều môn mới đủ, xếp theo hiệu quả tăng CPA.
+        💡 Phần <strong style="color:#4ade80">Cải thiện 1 môn là đủ</strong>: hiển thị điểm tối thiểu cần đạt (không nhất thiết phải A). Phần <strong style="color:var(--text-dim)">Góp phần</strong>: các môn cần kết hợp nhiều môn mới đủ, xếp theo hiệu quả tăng CPA.
       </div>
     </div>
   </div>
@@ -856,6 +901,7 @@ function saveEdit(e) {
 
 // ── SUGGESTION ENGINE ──
 let suggestTarget = 'gioi';
+let customTarget = 3.50;
 const TARGETS       = { gioi:3.20, xuatsac:3.60 };
 const TARGET_LABELS = { gioi:'3.20', xuatsac:'3.60' };
 const GRADE_STEPS   = [
@@ -879,7 +925,21 @@ function switchTarget(t) {
   suggestTarget = t;
   document.getElementById('tabGioi').className    = 'suggest-tab'+(t==='gioi'?' active-gioi':'');
   document.getElementById('tabXuatsac').className = 'suggest-tab'+(t==='xuatsac'?' active-xuatsac':'');
+  document.getElementById('tabCustom').className  = 'suggest-tab'+(t==='custom'?' active-custom':'');
   document.getElementById('progressFill').className = 'progress-fill '+t;
+  const wrap = document.getElementById('customTargetWrap');
+  wrap.classList.toggle('show', t === 'custom');
+  renderSuggest();
+}
+
+function onCustomTargetInput() {
+  const v = parseFloat(document.getElementById('customTargetInput').value);
+  if (!isNaN(v) && v > 0 && v <= 4.0) { customTarget = v; renderSuggest(); }
+}
+
+function setPreset(v) {
+  document.getElementById('customTargetInput').value = v.toFixed(2);
+  customTarget = v;
   renderSuggest();
 }
 
@@ -888,13 +948,14 @@ function renderSuggest() {
   if (!courses.length) { panel.style.display='none'; return; }
   panel.style.display = 'block';
 
-  const target = TARGETS[suggestTarget];
+  const target = suggestTarget==='custom' ? customTarget : TARGETS[suggestTarget];
+  const targetLabel = suggestTarget==='custom' ? customTarget.toFixed(2) : TARGET_LABELS[suggestTarget];
   let tc=0, ws=0;
   courses.forEach(c => { tc+=c.credits; ws+=c.gpa4*c.credits; });
   const cpa = tc===0 ? 0 : ws/tc;
 
   document.getElementById('sumCurrent').textContent = cpa.toFixed(2);
-  document.getElementById('sumTarget').textContent  = TARGET_LABELS[suggestTarget];
+  document.getElementById('sumTarget').textContent  = targetLabel;
   const gap = Math.max(0, target-cpa);
   const sumGap = document.getElementById('sumGap');
   sumGap.textContent = gap.toFixed(2);
@@ -904,14 +965,17 @@ function renderSuggest() {
   document.getElementById('progressFill').style.width = pct+'%';
   const pctEl = document.getElementById('progressPct');
   pctEl.textContent = pct+'%';
-  pctEl.style.color = pct>=100 ? '#4ade80' : suggestTarget==='xuatsac' ? '#fbbf24' : '#4ade80';
+  pctEl.style.color = pct>=100 ? '#4ade80' : suggestTarget==='xuatsac' ? '#fbbf24' : suggestTarget==='custom' ? '#a78bfa' : '#4ade80';
 
   const list = document.getElementById('suggestList');
   if (cpa >= target) {
-    list.innerHTML = `<div class="suggest-empty"><div class="ei">${suggestTarget==='xuatsac'?'🏆':'⭐'}</div><p>Chúc mừng! Bạn đã đạt <strong>${suggestTarget==='xuatsac'?'Xuất sắc':'Giỏi'}</strong> rồi!</p></div>`;
+    const emoji = suggestTarget==='xuatsac'?'🏆':suggestTarget==='custom'?'🎯':'⭐';
+    const label = suggestTarget==='xuatsac'?'Xuất sắc':suggestTarget==='custom'?`CPA ${targetLabel}`:'Giỏi';
+    list.innerHTML = `<div class="suggest-empty"><div class="ei">${emoji}</div><p>Chúc mừng! Bạn đã đạt <strong>${label}</strong> rồi!</p></div>`;
     return;
   }
 
+  const isCustom = suggestTarget==='custom';
   const isGold = suggestTarget==='xuatsac';
   const solo=[], partial=[];
   courses.forEach((c,i) => {
@@ -934,11 +998,11 @@ function renderSuggest() {
 
   let html='';
   if (solo.length) {
-    html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${isGold?'#fbbf24':'#4ade80'};margin-bottom:8px;padding:0 2px;">✦ Cải thiện 1 môn là đủ đạt mục tiêu</div>`;
+    html += `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${isCustom?'#a78bfa':isGold?'#fbbf24':'#4ade80'};margin-bottom:8px;padding:0 2px;">✦ Cải thiện 1 môn là đủ đạt mục tiêu</div>`;
     html += solo.slice(0,5).map((c,rank) => {
       const ngc = GRADE_CLASS[c.needed.grade]||'g-f';
       const cgc = GRADE_CLASS[c.grade]||'g-f';
-      return `<div class="suggest-item" style="border-color:${isGold?'rgba(251,191,36,0.25)':'rgba(74,222,128,0.25)'}">
+      return `<div class="suggest-item" style="border-color:${isCustom?'rgba(167,139,250,0.25)':isGold?'rgba(251,191,36,0.25)':'rgba(74,222,128,0.25)'}">
         <div class="si-left">
           <div class="si-name">${rank+1}. ${c.name}</div>
           <div class="si-meta">
@@ -947,7 +1011,7 @@ function renderSuggest() {
           </div>
         </div>
         <div class="si-right">
-          <div class="si-gain${isGold?' gold':''}" style="font-size:13px">Cần ${c.needed.grade}</div>
+          <div class="si-gain${isCustom?' custom':isGold?' gold':''}" style="font-size:13px">Cần ${c.needed.grade}</div>
           <div class="si-new-grade">CPA → ${c.needed.newCpa.toFixed(2)}</div>
         </div>
       </div>`;
